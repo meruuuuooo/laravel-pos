@@ -30,7 +30,15 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^6.7.1",
+        "@fortawesome/free-solid-svg-icons": "^6.7.1",
+        "@fortawesome/react-fontawesome": "^0.2.2",
         "@heroicons/react": "^2.2.0",
+        "chart.js": "^4.4.7",
+        "font-awesome-icons": "^1.6.0",
+        "html2pdf.js": "^0.10.2",
+        "react-chartjs-2": "^5.2.0",
+        "react-toastify": "^10.0.6",
         "sweetalert2": "^11.14.5"
     }
 }
