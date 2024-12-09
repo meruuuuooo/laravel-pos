@@ -93,7 +93,7 @@ class ProductController extends Controller
             // Commit transaction
             DB::commit();
 
-            return redirect()->route('product.index')->with('success', 'Product created successfully!');
+            return redirect()->route('product.create')->with('success', 'Product created successfully!');
         } catch (\Exception $e) {
             // Rollback transaction on error
             DB::rollBack();
