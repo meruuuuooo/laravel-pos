@@ -1,17 +1,9 @@
 import PrimaryButton from '@/Components/PrimaryButton';
-import { TrashIcon, UserPlusIcon } from '@heroicons/react/24/solid';
-import { Link, router } from '@inertiajs/react';
-
-const TABLE_HEAD = ['Member', 'Role', 'Status', 'Created At', ''];
+import { UserPlusIcon } from '@heroicons/react/24/solid';
+import { Link } from '@inertiajs/react';
+const TABLE_HEAD = ['Member', 'Role', 'Status', 'Created At'];
 
 export default function UserTable({ users }) {
-    const handleDeleteUser = (id) => {
-        router.delete(route('user.destroy', id), {
-            preserveScroll: true,
-            preserveState: true,
-        });
-    };
-
     return (
         <div className="rounded-lg bg-white shadow">
             <div className="rounded-t-lg border-b p-4">
@@ -97,16 +89,6 @@ export default function UserTable({ users }) {
                                             user.created_at,
                                         ).toLocaleDateString()}
                                     </p>
-                                </td>
-                                <td>
-                                    <button
-                                        onClick={() => {
-                                            handleDeleteUser(user.id);
-                                        }}
-                                        className="p-2 text-red-500 hover:text-red-700"
-                                    >
-                                        <TrashIcon className="h-4 w-4" />
-                                    </button>
                                 </td>
                             </tr>
                         ))}

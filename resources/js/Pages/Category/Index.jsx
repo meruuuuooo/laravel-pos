@@ -5,6 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { Head, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import swal2 from 'sweetalert2';
 import EditCategoryModal from './Partials/EditCategoryModal';
 
 const TABLE_HEAD = ['ID', 'Name', 'Created At', 'Updated At', 'Action'];
@@ -34,7 +35,12 @@ export default function Index({ categories }) {
         e.preventDefault();
 
         post(route('category.store'), {
+            preserveScroll: true,
+            preserveState: true,
             onFinish: () => reset('name'),
+            onSuccess: () => {
+                swal2.fire('Success', 'Category added successfully', 'success');
+            },
         });
     };
 

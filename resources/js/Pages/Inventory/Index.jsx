@@ -9,9 +9,16 @@ export default function Index({ products }) {
     const [selectedStock, setSelectedStock] = useState(null); // Selected category state
 
     const handleSaveStock = (quantity) => {
-        router.patch(route('inventory.update', selectedStock.id), {
-            quantity: quantity,
-        });
+        router.patch(
+            route('inventory.update', selectedStock.id),
+            {
+                quantity: quantity,
+            },
+            {
+                preserveScroll: true,
+                preserveState: true,
+            },
+        );
 
         setIsModalOpen(false); // Close the modal
     };

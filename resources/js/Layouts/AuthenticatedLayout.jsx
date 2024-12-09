@@ -1,11 +1,14 @@
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
+import { usePermission } from '@/Composable/Permissions';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const { hasRole } = usePermission();
 
     return (
         <div className="flex min-h-screen bg-gray-100">
@@ -44,170 +47,186 @@ export default function AuthenticatedLayout({ header, children }) {
                                 />
                             </svg>
                         </button>
+                        <p className="text-sm text-pink-500">
+                            {hasRole('admin') ? 'Admin' : 'Cashier'}
+                        </p>
                     </div>
 
                     <ul className="space-y-2">
-                        <li
-                            className={`flex items-center space-x-3 p-2 shadow-sm transition ${
-                                route().current('dashboard')
-                                    ? 'bg-pink-500 text-white'
-                                    : 'text-gray-700 hover:bg-gray-200'
-                            }`}
-                        >
-                            <img
-                                src="/icons/dashboard.png"
-                                alt="Dashboard Logo"
-                                className="h-8 w-8"
-                            />
-                            <NavLink
-                                href={route('dashboard')}
-                                className={`flex items-center space-x-3 px-4 transition ${
+                        {hasRole('admin') && (
+                            <li
+                                className={`flex items-center space-x-3 p-2 shadow-sm transition ${
                                     route().current('dashboard')
-                                        ? 'text-white'
-                                        : 'text-gray-700'
+                                        ? 'bg-pink-500 text-white'
+                                        : 'text-gray-700 hover:bg-gray-200'
                                 }`}
                             >
-                                <span>Dashboard</span>
-                            </NavLink>
-                        </li>
-                        <li
-                            className={`flex items-center space-x-3 p-2 shadow-sm transition ${
-                                route().current('product.index')
-                                    ? 'bg-pink-500 text-white'
-                                    : 'text-gray-700 hover:bg-gray-200'
-                            }`}
-                        >
-                            <img
-                                src="/icons/product.png"
-                                alt="Product Logo"
-                                className="h-8 w-8"
-                            />
-                            <NavLink
-                                href={route('product.index')}
-                                className={`flex items-center space-x-3 px-4 transition ${
-                                    route().current('product.index')
-                                        ? 'text-white'
-                                        : 'text-gray-700'
-                                }`}
-                            >
-                                <span>Products</span>
-                            </NavLink>
-                        </li>
-                        <li
-                            className={`flex items-center space-x-3 p-2 shadow-sm transition ${
-                                route().current('category.index')
-                                    ? 'bg-pink-500 text-white'
-                                    : 'text-gray-700 hover:bg-gray-200'
-                            }`}
-                        >
-                            <img
-                                src="/icons/icons8-categories-32.png"
-                                alt="Category Logo"
-                                className="h-8 w-8"
-                            />
-                            <NavLink
-                                href={route('category.index')}
-                                className={`flex items-center space-x-3 px-4 transition ${
-                                    route().current('category.index')
-                                        ? 'text-white'
-                                        : 'text-gray-700'
-                                }`}
-                            >
-                                <span>Categories</span>
-                            </NavLink>
-                        </li>
-                        <li
-                            className={`flex items-center space-x-3 p-2 shadow-sm transition ${
-                                route().current('inventory.index')
-                                    ? 'bg-pink-500 text-white'
-                                    : 'text-gray-700 hover:bg-gray-200'
-                            }`}
-                        >
-                            <img
-                                src="/icons/inventory.png"
-                                alt="Category Logo"
-                                className="h-8 w-8"
-                            />
-                            <NavLink
-                                href={route('inventory.index')}
-                                className={`flex items-center space-x-3 px-4 transition ${
-                                    route().current('inventory.index')
-                                        ? 'text-white'
-                                        : 'text-gray-700'
-                                }`}
-                            >
-                                <span>Inventory</span>
-                            </NavLink>
-                        </li>
-                        {/* <li
-                            className={`flex items-center space-x-3 p-2 shadow-sm transition ${
-                                route().current('sale.index')
-                                    ? 'bg-pink-500 text-white'
-                                    : 'text-gray-700 hover:bg-gray-200'
-                            }`}
-                        >
-                            <img
-                                src="/icons/sales.png"
-                                alt="Category Logo"
-                                className="h-8 w-8"
-                            />
-                            <NavLink
-                                href={route('sale.index')}
-                                className={`flex items-center space-x-3 px-4 transition ${
-                                    route().current('sale.index')
-                                        ? 'text-white'
-                                        : 'text-gray-700'
-                                }`}
-                            >
-                                <span>Sales Report</span>
-                            </NavLink>
-                        </li> */}
-                        <li
-                            className={`flex items-center space-x-3 p-2 shadow-sm transition ${
-                                route().current('order.index')
-                                    ? 'bg-pink-500 text-white'
-                                    : 'text-gray-700 hover:bg-gray-200'
-                            }`}
-                        >
-                            <img
-                                src="/icons/orders.png"
-                                alt="Category Logo"
-                                className="h-8 w-8"
-                            />
-                            <NavLink
-                                href={route('order.index')}
-                                className={`flex items-center space-x-3 px-4 transition ${
+                                <img
+                                    src="/icons/dashboard.png"
+                                    alt="Dashboard Logo"
+                                    className="h-8 w-8"
+                                />
+                                <NavLink
+                                    href={route('dashboard')}
+                                    className={`flex items-center space-x-3 px-4 transition ${
+                                        route().current('dashboard')
+                                            ? 'text-white'
+                                            : 'text-gray-700'
+                                    }`}
+                                >
+                                    <span>Dashboard</span>
+                                </NavLink>
+                            </li>
+                        )}
+
+                        {hasRole('cashier') && (
+                            <li
+                                className={`flex items-center space-x-3 p-2 shadow-sm transition ${
                                     route().current('order.index')
-                                        ? 'text-white'
-                                        : 'text-gray-700'
+                                        ? 'bg-pink-500 text-white'
+                                        : 'text-gray-700 hover:bg-gray-200'
                                 }`}
                             >
-                                <span>Order</span>
-                            </NavLink>
-                        </li>
-                        <li
-                            className={`flex items-center space-x-3 p-2 shadow-sm transition ${
-                                route().current('user.index')
-                                    ? 'bg-pink-500 text-white'
-                                    : 'text-gray-700 hover:bg-gray-200'
-                            }`}
-                        >
-                            <img
-                                src="/icons/users.png"
-                                alt="Category Logo"
-                                className="h-8 w-8"
-                            />
-                            <NavLink
-                                href={route('user.index')}
-                                className={`flex items-center space-x-3 px-4 transition ${
-                                    route().current('user.index')
-                                        ? 'text-white'
-                                        : 'text-gray-700'
+                                <img
+                                    src="/icons/orders.png"
+                                    alt="Order Logo"
+                                    className="h-8 w-8"
+                                />
+                                <NavLink
+                                    href={route('order.index')}
+                                    className={`flex items-center space-x-3 px-4 transition ${
+                                        route().current('order.index')
+                                            ? 'text-white'
+                                            : 'text-gray-700'
+                                    }`}
+                                >
+                                    <span>Order</span>
+                                </NavLink>
+                            </li>
+                        )}
+
+                        {hasRole('admin') || hasRole('cashier') ? (
+                            <li
+                                className={`flex items-center space-x-3 p-2 shadow-sm transition ${
+                                    route().current('inventory.index')
+                                        ? 'bg-pink-500 text-white'
+                                        : 'text-gray-700 hover:bg-gray-200'
                                 }`}
                             >
-                                <span>Users</span>
-                            </NavLink>
-                        </li>
+                                <img
+                                    src="/icons/inventory.png"
+                                    alt="Inventory Logo"
+                                    className="h-8 w-8"
+                                />
+                                <NavLink
+                                    href={route('inventory.index')}
+                                    className={`flex items-center space-x-3 px-4 transition ${
+                                        route().current('inventory.index')
+                                            ? 'text-white'
+                                            : 'text-gray-700'
+                                    }`}
+                                >
+                                    <span>Inventory</span>
+                                </NavLink>
+                            </li>
+                        ) : null}
+
+                        {hasRole('admin') && (
+                            <>
+                                <li
+                                    className={`flex items-center space-x-3 p-2 shadow-sm transition ${
+                                        route().current('product.index')
+                                            ? 'bg-pink-500 text-white'
+                                            : 'text-gray-700 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    <img
+                                        src="/icons/product.png"
+                                        alt="Product Logo"
+                                        className="h-8 w-8"
+                                    />
+                                    <NavLink
+                                        href={route('product.index')}
+                                        className={`flex items-center space-x-3 px-4 transition ${
+                                            route().current('product.index')
+                                                ? 'text-white'
+                                                : 'text-gray-700'
+                                        }`}
+                                    >
+                                        <span>Products</span>
+                                    </NavLink>
+                                </li>
+                                <li
+                                    className={`flex items-center space-x-3 p-2 shadow-sm transition ${
+                                        route().current('category.index')
+                                            ? 'bg-pink-500 text-white'
+                                            : 'text-gray-700 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    <img
+                                        src="/icons/icons8-categories-32.png"
+                                        alt="Category Logo"
+                                        className="h-8 w-8"
+                                    />
+                                    <NavLink
+                                        href={route('category.index')}
+                                        className={`flex items-center space-x-3 px-4 transition ${
+                                            route().current('category.index')
+                                                ? 'text-white'
+                                                : 'text-gray-700'
+                                        }`}
+                                    >
+                                        <span>Categories</span>
+                                    </NavLink>
+                                </li>
+                                <li
+                                    className={`flex items-center space-x-3 p-2 shadow-sm transition ${
+                                        route().current('sale.index')
+                                            ? 'bg-pink-500 text-white'
+                                            : 'text-gray-700 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    <img
+                                        src="/icons/sales.png"
+                                        alt="Category Logo"
+                                        className="h-8 w-8"
+                                    />
+                                    <NavLink
+                                        href={route('sale.index')}
+                                        className={`flex items-center space-x-3 px-4 transition ${
+                                            route().current('sale.index')
+                                                ? 'text-white'
+                                                : 'text-gray-700'
+                                        }`}
+                                    >
+                                        <span>Sales Reports</span>
+                                    </NavLink>
+                                </li>
+                                <li
+                                    className={`flex items-center space-x-3 p-2 shadow-sm transition ${
+                                        route().current('user.index')
+                                            ? 'bg-pink-500 text-white'
+                                            : 'text-gray-700 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    <img
+                                        src="/icons/users.png"
+                                        alt="Category Logo"
+                                        className="h-8 w-8"
+                                    />
+                                    <NavLink
+                                        href={route('user.index')}
+                                        className={`flex items-center space-x-3 px-4 transition ${
+                                            route().current('user.index')
+                                                ? 'text-white'
+                                                : 'text-gray-700'
+                                        }`}
+                                    >
+                                        <span>User</span>
+                                    </NavLink>
+                                </li>
+                            </>
+                        )}
                     </ul>
                 </div>
             </aside>

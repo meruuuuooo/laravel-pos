@@ -3,11 +3,21 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import SelectInput from '@/Components/SelectInput';
 import TextInput from '@/Components/TextInput';
+import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import swal2 from 'sweetalert2';
 
 export default function StoreProduct({ categories }) {
-    const { data, setData, post, errors, processing, reset } = useForm({
+    const {
+        data,
+        setData,
+        post,
+        errors,
+        processing,
+        reset,
+        recentlySuccessful,
+    } = useForm({
         imageURL: '',
         name: '',
         category_id: '',
@@ -27,8 +37,15 @@ export default function StoreProduct({ categories }) {
 
         post(route('product.store'), {
             preserveScroll: true,
+            preserveState: true,
             onSuccess: () => {
                 reset();
+                setPreviewUrl(null);
+                swal2.fire(
+                    'Success',
+                    'Product created successfully',
+                    'success',
+                );
             },
         });
     };
@@ -188,6 +205,16 @@ export default function StoreProduct({ categories }) {
                             >
                                 Create
                             </PrimaryButton>
+
+                            <Transition
+                                show={recentlySuccessful}
+                                enter="transition ease-in-out"
+                                enterFrom="opacity-0"
+                                leave="transition ease-in-out"
+                                leaveTo="opacity-0"
+                            >
+                                <p className="text-sm text-gray-600">Saved.</p>
+                            </Transition>
                         </div>
                     </form>
                 </section>
