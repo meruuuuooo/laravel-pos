@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         // $user->assignRole('cashier');
 
         $this->call([
-            RoleSeeder::class,
+            // RoleSeeder::class,
             UserSeeder::class,
         ]);
     }

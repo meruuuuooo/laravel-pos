@@ -9,7 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Sale extends Model
 {
 
-    protected $fillable = ['user_id', 'total_amount'];
+    protected $casts = [
+        'sale_date' => 'date',
+    ];
+
+    protected $fillable = ['sale_date', 'user_id', 'total_amount'];
 
     public function user(): BelongsTo
     {

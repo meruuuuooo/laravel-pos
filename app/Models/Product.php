@@ -25,6 +25,10 @@ class Product extends Model
     {
         return $this->hasOne(Inventory::class);
     }
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
+    }
 
     public function salesDetails(): HasMany
     {
