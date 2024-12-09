@@ -4,8 +4,10 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SaleController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SaleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -19,9 +21,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -29,30 +28,48 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::middleware('role:admin')->group(function () {
-        Route::get('/product', [ProductController::class, 'index'])->name('product.index');
-        Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
-        Route::post('/product', [ProductController::class, 'store'])->name('product.store');
-        Route::get('/product/{product}/edit', [ProductController::class, 'edit'])->name('product.edit');
-        Route::patch('/product/{product}', [ProductController::class, 'update'])->name('product.update');
-        Route::delete('/product/{product}', [ProductController::class, 'destroy'])->name('product.destroy');
 
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
-        Route::post('/category', [CategoryController::class, 'store'])->name('category.store');
-        Route::patch('/category/{category}', [CategoryController::class, 'update'])->name('category.update');
+        Route::prefix('product')->name('product.')->group(function () {
+            Route::get('/', [ProductController::class, 'index'])->name('index');
+            Route::get('/create', [ProductController::class, 'create'])->name('create');
+            Route::post('/', [ProductController::class, 'store'])->name('store');
+            Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit');
+            Route::patch('/{product}', [ProductController::class, 'update'])->name('update');
+            Route::delete('/{product}', [ProductController::class, 'destroy'])->name('destroy');
+        });
 
-        Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
-        Route::patch('/inventory/{inventory}', [InventoryController::class, 'update'])->name('inventory.update');
+        Route::prefix('category')->name('category.')->group(function () {
+            Route::get('/', [CategoryController::class, 'index'])->name('index');
+            Route::post('/', [CategoryController::class, 'store'])->name('store');
+            Route::patch('/{category}', [CategoryController::class, 'update'])->name('update');
+        });
 
-        Route::get('/order', [SaleController::class, 'index'])->name('order.index');
+        Route::prefix('user')->name('user.')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('index');
+            Route::get('/create', [UserController::class, 'create'])->name('create');
+            Route::post('/', [UserController::class, 'store'])->name('store');
+            Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+        });
 
-        Route::get('/user', [UserController::class, 'index'])->name('user.index');
-        Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
-        Route::post('/user', [UserController::class, 'store'])->name('user.store');
-        Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
+        Route::get('/sales', [SaleController::class, 'index'])->name('sale.index');
+        Route::get('/sales/report/month-sales', [SaleController::class, 'salesReport'])->name('sales.monthlySales');
+        Route::get('/sales/report/best-selling-products', [SaleController::class, 'BestSellingProducts'])->name('sales.bestSellingProducts');
+
+    });
+
+    Route::middleware('role:cashier')->group(function () {
+        Route::get('/order', [OrderController::class, 'index'])->name('order.index');
+        Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+    });
+
+    Route::middleware(['role:admin|cashier'])->group(function () {
+        Route::prefix('inventory')->name('inventory.')->group(function () {
+            Route::get('/', [InventoryController::class, 'index'])->name('index');
+            Route::patch('/{inventory}', [InventoryController::class, 'update'])->name('update');
+        });
     });
 });
-
-
 
 require __DIR__ . '/auth.php';
