@@ -19,7 +19,7 @@ export default function Index({ today, yesterday, productSalesComparison }) {
                     {/* Grid Layout */}
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                         {/* Sales Comparison */}
-                        <div className="bg-white p-4 shadow-sm sm:rounded-lg">
+                        <div className="border border-pink-400 bg-white p-4 shadow-sm sm:rounded-lg">
                             <h5 className="mb-4 text-lg font-semibold text-gray-800">
                                 Sales Comparison
                             </h5>
@@ -30,7 +30,7 @@ export default function Index({ today, yesterday, productSalesComparison }) {
                         </div>
 
                         {/* Product Sales Comparison */}
-                        <div className="bg-white p-4 shadow-sm sm:rounded-lg">
+                        <div className="border border-pink-400 bg-white p-4 shadow-sm sm:rounded-lg">
                             <h5 className="mb-4 text-lg font-semibold text-gray-800">
                                 Product Sales Comparison
                             </h5>
@@ -52,7 +52,7 @@ export default function Index({ today, yesterday, productSalesComparison }) {
                             </div>
                             <div className="flex flex-row gap-4">
                                 <Link href={route('sales.monthlySales')}>
-                                    <button className="w-64 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                    <button className="w-64 rounded-lg bg-blue-400 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                         View Monthly Sales Report
                                     </button>
                                 </Link>
