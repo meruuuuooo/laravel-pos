@@ -4,9 +4,25 @@ import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import EditStockModal from './Partials/EditStockModal';
 
-export default function Index({ products }) {
+export default function Index({ products, filters }) {
     const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
     const [selectedStock, setSelectedStock] = useState(null); // Selected category state
+
+    const [search, setSearch] = useState(filters.search || '');
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        router.get(
+            route('inventory.index'),
+            { search },
+            { preserveState: true },
+        );
+    };
+
+    const handleReset = () => {
+        setSearch('');
+        router.get(route('inventory.index'), {}, { preserveState: true });
+    };
 
     const handleSaveStock = (quantity) => {
         router.patch(
@@ -51,7 +67,7 @@ export default function Index({ products }) {
                             <div className="col-span-2">
                                 <div className="rounded-lg bg-white shadow">
                                     <div className="border-b p-4">
-                                        <div className="mb-4 flex items-center justify-between">
+                                        <div className="mb-4 flex flex-col justify-between gap-4">
                                             <div>
                                                 <h5 className="text-lg font-semibold text-gray-800">
                                                     Restock Inventory
@@ -62,11 +78,35 @@ export default function Index({ products }) {
                                                 </p>
                                             </div>
                                             <div className="w-full md:w-72">
-                                                <TextInput
-                                                    type="text"
-                                                    className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm focus:ring-pink-500"
-                                                    placeholder="Search"
-                                                />
+                                                <form
+                                                    onSubmit={handleSearch}
+                                                    className="flex gap-4"
+                                                >
+                                                    <TextInput
+                                                        type="text"
+                                                        className="w-52 rounded-md border border-pink-300 px-4 py-2 text-sm text-gray-800 focus:ring-pink-500"
+                                                        placeholder="Search products..."
+                                                        value={search}
+                                                        onChange={(e) =>
+                                                            setSearch(
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                    />
+                                                    <button
+                                                        type="submit"
+                                                        className="rounded bg-blue-500 px-4 py-1 text-white"
+                                                    >
+                                                        Search
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleReset}
+                                                        className="rounded bg-gray-500 px-4 py-1 text-white"
+                                                    >
+                                                        Reset
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
