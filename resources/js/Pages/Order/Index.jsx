@@ -2,7 +2,7 @@ import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { toast, ToastContainer, Zoom } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import swal2 from 'sweetalert2';
 
@@ -131,42 +131,63 @@ const Index = ({ categories, products }) => {
 
             <div className="py-6">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-5 grid-rows-2 gap-4">
-                        {/* Product Section */}
-                        <div className="col-span-3 row-span-2">
-                            <div className="bg-white p-4 shadow-sm sm:rounded-lg">
-                                <div className="mb-4 border-b">
-                                    <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                                        <div>
-                                            <h5 className="text-lg font-semibold text-gray-800">
-                                                Choose Category
-                                            </h5>
-                                            <p className="text-sm text-pink-500">
-                                                {categories.length} Categories
+                    <div className="grid grid-cols-5 grid-rows-4 gap-4">
+                        <div className="col-span-3">
+                            <div className="mb-4 rounded-lg border border-b border-pink-400 bg-white p-6 shadow-lg">
+                                <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                                    <div>
+                                        <h5 className="text-lg font-semibold text-gray-800">
+                                            Choose Category
+                                        </h5>
+                                        <p className="text-sm text-pink-500">
+                                            {categories.length} Categories
+                                        </p>
+                                    </div>
+                                    <div className="w-full md:w-72">
+                                        <TextInput
+                                            type="text"
+                                            className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm focus:ring-pink-500"
+                                            placeholder="Search"
+                                            value={searchTerm}
+                                            onChange={(e) =>
+                                                setSearchTerm(e.target.value)
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                                <div className="p-2">
+                                    <div className="flex space-x-2 overflow-x-auto py-2">
+                                        <div
+                                            onClick={() =>
+                                                setSelectedCategory('All')
+                                            }
+                                            className={`inline-block min-w-[120px] cursor-pointer rounded-3xl p-2 text-center transition ${
+                                                selectedCategory === 'All'
+                                                    ? 'border-2 border-pink-500 bg-gray-200'
+                                                    : 'bg-gray-300'
+                                            }`}
+                                        >
+                                            <p
+                                                className={`text-sm font-semibold ${
+                                                    selectedCategory === 'All'
+                                                        ? 'text-pink-500'
+                                                        : 'text-gray-800'
+                                                }`}
+                                            >
+                                                All
                                             </p>
                                         </div>
-                                        <div className="w-full md:w-72">
-                                            <TextInput
-                                                type="text"
-                                                className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm focus:ring-pink-500"
-                                                placeholder="Search"
-                                                value={searchTerm}
-                                                onChange={(e) =>
-                                                    setSearchTerm(
-                                                        e.target.value,
+                                        {categories.map((category) => (
+                                            <div
+                                                key={category.id}
+                                                onClick={() =>
+                                                    setSelectedCategory(
+                                                        category.name,
                                                     )
                                                 }
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="p-2">
-                                        <div className="flex space-x-2 overflow-x-auto py-2">
-                                            <div
-                                                onClick={() =>
-                                                    setSelectedCategory('All')
-                                                }
                                                 className={`inline-block min-w-[120px] cursor-pointer rounded-3xl p-2 text-center transition ${
-                                                    selectedCategory === 'All'
+                                                    selectedCategory ===
+                                                    category.name
                                                         ? 'border-2 border-pink-500 bg-gray-200'
                                                         : 'bg-gray-300'
                                                 }`}
@@ -174,121 +195,22 @@ const Index = ({ categories, products }) => {
                                                 <p
                                                     className={`text-sm font-semibold ${
                                                         selectedCategory ===
-                                                        'All'
+                                                        category.name
                                                             ? 'text-pink-500'
                                                             : 'text-gray-800'
                                                     }`}
                                                 >
-                                                    All
+                                                    {category.name}
                                                 </p>
                                             </div>
-                                            {categories.map((category) => (
-                                                <div
-                                                    key={category.id}
-                                                    onClick={() =>
-                                                        setSelectedCategory(
-                                                            category.name,
-                                                        )
-                                                    }
-                                                    className={`inline-block min-w-[120px] cursor-pointer rounded-3xl p-2 text-center transition ${
-                                                        selectedCategory ===
-                                                        category.name
-                                                            ? 'border-2 border-pink-500 bg-gray-200'
-                                                            : 'bg-gray-300'
-                                                    }`}
-                                                >
-                                                    <p
-                                                        className={`text-sm font-semibold ${
-                                                            selectedCategory ===
-                                                            category.name
-                                                                ? 'text-pink-500'
-                                                                : 'text-gray-800'
-                                                        }`}
-                                                    >
-                                                        {category.name}
-                                                    </p>
-                                                </div>
-                                            ))}
-                                        </div>
+                                        ))}
                                     </div>
-                                </div>
-                                <div className="mt-6">
-                                    {filteredProducts.length > 0 ? (
-                                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                            {filteredProducts.map((product) => (
-                                                <div
-                                                    key={product.id}
-                                                    className="max-w-xs overflow-hidden rounded-lg border border-pink-200 bg-white shadow-lg"
-                                                >
-                                                    <img
-                                                        src={product.imageURL}
-                                                        alt={product.name}
-                                                        className="h-32 w-full object-contain"
-                                                    />
-                                                    <div className="p-4">
-                                                        <h3 className="text-md font-bold text-gray-800">
-                                                            {product.name}
-                                                        </h3>
-                                                        <p className="mt-1 text-gray-600">
-                                                            {new Intl.NumberFormat(
-                                                                'en-PH',
-                                                                {
-                                                                    style: 'currency',
-                                                                    currency:
-                                                                        'PHP',
-                                                                },
-                                                            ).format(
-                                                                product.price,
-                                                            )}
-                                                        </p>
-                                                        <button
-                                                            onClick={() =>
-                                                                addToCart(
-                                                                    product,
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                cart.find(
-                                                                    (item) =>
-                                                                        item.id ===
-                                                                        product.id,
-                                                                )?.quantity >=
-                                                                product
-                                                                    .inventory
-                                                                    .quantity
-                                                            }
-                                                            className={`mt-2 w-full rounded-md border-2 px-3 py-1 font-semibold ${
-                                                                cart.find(
-                                                                    (item) =>
-                                                                        item.id ===
-                                                                        product.id,
-                                                                )?.quantity >=
-                                                                product
-                                                                    .inventory
-                                                                    .quantity
-                                                                    ? 'cursor-not-allowed border-gray-400 text-gray-400'
-                                                                    : 'border-pink-400 text-pink-400 hover:bg-pink-300 hover:text-white'
-                                                            }`}
-                                                        >
-                                                            Add to Cart
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <p className="text-center text-gray-500">
-                                            No products available in this
-                                            category.
-                                        </p>
-                                    )}
                                 </div>
                             </div>
                         </div>
-
-                        {/* Cart Section */}
-                        <div className="col-span-2 col-start-4 row-span-6">
-                            <div className="w-78 rounded-lg bg-white p-6 shadow-lg">
+                        <div className="col-span-2 col-start-4 row-span-4">
+                            {/* Cart Section */}
+                            <div className="w-78 rounded-lg border border-pink-400 bg-white p-6 shadow-lg">
                                 <h5 className="text-xl font-semibold text-gray-800">
                                     Order Cart
                                 </h5>
@@ -399,6 +321,81 @@ const Index = ({ categories, products }) => {
                                 </button>
                             </div>
                         </div>
+                        <div className="col-span-3 row-span-4 row-start-2">
+                            <div className="rounded-lg border border-pink-400 bg-white px-4 sm:rounded-lg">
+                                <div className="my-4">
+                                    {filteredProducts.length > 0 ? (
+                                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                            {filteredProducts.map((product) => (
+                                                <div
+                                                    key={product.id}
+                                                    className="max-w-xs overflow-hidden rounded-lg border border-pink-200 bg-white shadow-lg"
+                                                >
+                                                    <img
+                                                        src={product.imageURL}
+                                                        alt={product.name}
+                                                        className="h-32 w-full object-contain"
+                                                    />
+                                                    <div className="p-4">
+                                                        <h3 className="text-md font-bold text-gray-800">
+                                                            {product.name}
+                                                        </h3>
+                                                        <p className="mt-1 text-gray-600">
+                                                            {new Intl.NumberFormat(
+                                                                'en-PH',
+                                                                {
+                                                                    style: 'currency',
+                                                                    currency:
+                                                                        'PHP',
+                                                                },
+                                                            ).format(
+                                                                product.price,
+                                                            )}
+                                                        </p>
+                                                        <button
+                                                            onClick={() =>
+                                                                addToCart(
+                                                                    product,
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                cart.find(
+                                                                    (item) =>
+                                                                        item.id ===
+                                                                        product.id,
+                                                                )?.quantity >=
+                                                                product
+                                                                    .inventory
+                                                                    .quantity
+                                                            }
+                                                            className={`mt-2 w-full rounded-md border-2 px-3 py-1 font-semibold ${
+                                                                cart.find(
+                                                                    (item) =>
+                                                                        item.id ===
+                                                                        product.id,
+                                                                )?.quantity >=
+                                                                product
+                                                                    .inventory
+                                                                    .quantity
+                                                                    ? 'cursor-not-allowed border-gray-400 text-gray-400'
+                                                                    : 'border-pink-400 text-pink-400 hover:bg-pink-300 hover:text-white'
+                                                            }`}
+                                                        >
+                                                            Add to Cart
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-center text-gray-500">
+                                            No products available in this
+                                            category.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -414,7 +411,6 @@ const Index = ({ categories, products }) => {
                 draggable={false}
                 pauseOnHover
                 theme="colored"
-                transition={Zoom}
             />
         </AuthenticatedLayout>
     );
