@@ -131,6 +131,7 @@ class SaleController extends Controller
             'salesDetails.product:id,name',
         ])
             ->whereBetween('sale_date', [$startDate, $endDate])
+            ->orderBy('sale_date', 'desc')
             ->get()
             ->map(function ($sale) {
                 return [
@@ -147,8 +148,8 @@ class SaleController extends Controller
                     'total_sale_amount' => $sale->total_amount,
                 ];
             });
-        $totalSalesAmount = Sale::whereBetween('sale_date', [$startDate, $endDate])->sum('total_amount');
 
+        $totalSalesAmount = Sale::whereBetween('sale_date', [$startDate, $endDate])->sum('total_amount');
 
         // Pass data to the view
         return Inertia::render('Sales/Reports/SalesReport', [
