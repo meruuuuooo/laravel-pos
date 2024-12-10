@@ -12,12 +12,24 @@ class InventoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('inventory', 'category')->get();
+        $query = Product::with('category', 'inventory');
+
+        // Filter by search query if provided
+        if ($search = $request->get('search')) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhereHas('category', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+        }
+
+        // Paginate results
+        $products = $query->get();
 
         return Inertia::render('Inventory/Index', [
             'products' => $products,
+            'filters' => $request->only('search'),
         ]);
     }
 
