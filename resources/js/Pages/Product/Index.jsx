@@ -1,8 +1,10 @@
+import Pagination from '@/Components/Pagination';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 import swal2 from 'sweetalert2';
 
 const TABLE_HEAD = [
@@ -20,7 +22,19 @@ const formatDateTime = (datetime) => {
     return `${date.toLocaleDateString()} - ${date.toLocaleTimeString()}`;
 };
 
-export default function Index({ products }) {
+export default function Index({ products, filters }) {
+    const [search, setSearch] = useState(filters.search || '');
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        router.get(route('product.index'), { search }, { preserveState: true });
+    };
+
+    const handleReset = () => {
+        setSearch('');
+        router.get(route('product.index'), {}, { preserveState: true });
+    };
+
     const handleDeleteProduct = (id) => {
         swal2
             .fire({
@@ -75,10 +89,6 @@ export default function Index({ products }) {
                                         </div>
                                         <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
                                             <div className="flex items-center">
-                                                <p className="mx-2 text-sm">
-                                                    total : 10
-                                                </p>
-
                                                 <Link
                                                     href={route(
                                                         'product.create',
@@ -91,17 +101,37 @@ export default function Index({ products }) {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-                                        <div className="w-full md:w-72">
+                                    <div className="gap-4 md:flex-row">
+                                        <form
+                                            onSubmit={handleSearch}
+                                            className="flex gap-4"
+                                        >
                                             <TextInput
                                                 type="text"
-                                                className="w-full rounded-md border border-pink-300 px-4 py-2 text-sm focus:ring-pink-500"
-                                                placeholder="Search"
+                                                className="w-52 rounded-md border border-pink-300 px-4 py-2 text-sm text-gray-800 focus:ring-pink-500"
+                                                placeholder="Search products..."
+                                                value={search}
+                                                onChange={(e) =>
+                                                    setSearch(e.target.value)
+                                                }
                                             />
-                                        </div>
+                                            <button
+                                                type="submit"
+                                                className="rounded bg-blue-500 px-4 py-1 text-white"
+                                            >
+                                                Search
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={handleReset}
+                                                className="rounded bg-gray-500 px-4 py-1 text-white"
+                                            >
+                                                Reset
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
-                                <div className="p-4">
+                                <div className="p-4 text-gray-800">
                                     <table className="mt-4 w-full min-w-max table-auto text-left">
                                         <thead>
                                             <tr>
@@ -116,7 +146,7 @@ export default function Index({ products }) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {products.map((product) => (
+                                            {products.data.map((product) => (
                                                 <tr key={product.id}>
                                                     <td className="px-4 py-3">
                                                         <img
@@ -173,6 +203,7 @@ export default function Index({ products }) {
                                             ))}
                                         </tbody>
                                     </table>
+                                    <Pagination value={products} />
                                 </div>
                             </div>
                         </div>
