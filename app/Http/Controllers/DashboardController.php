@@ -15,12 +15,12 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $period = $request->input('period', 'monthly'); // Default to monthly
+        $period = $request->input('period', 'daily'); // Default to daily
 
         // Define the period format for SQLite
         switch ($period) {
-            case 'daily':
-                $format = '%Y-%m-%d';
+            case 'monthly':
+                $format = '%Y-%m';
                 break;
             case 'weekly':
                 $format = '%Y-%W'; // Week of the year
@@ -28,8 +28,8 @@ class DashboardController extends Controller
             case 'yearly':
                 $format = '%Y';
                 break;
-            default: // monthly
-                $format = '%Y-%m';
+            default: // dail
+                $format = '%Y-%m-%d';
         }
 
         // Group sales data by the selected period
@@ -43,10 +43,13 @@ class DashboardController extends Controller
         $totalProduct = Product::count();
         $totalCategory = Category::count();
 
-        $logs = Sale::with('salesDetails.product', 'user')
-            ->orderBy('sale_date', 'desc')
-            ->paginate(5); // Use paginate instead of limit
+        // $logs = Sale::with('salesDetails.product', 'user')
+        //     ->orderBy('sale_date', 'desc')
+        //     ->paginate(5); // Use paginate instead of limit
 
+        $logs = SalesDetail::with('product', 'sale.user')
+            ->orderBy('created_at', 'desc')
+            ->paginate(3);
 
         return Inertia::render('Dashboard', [
             'totalSales' => $totalSales,
