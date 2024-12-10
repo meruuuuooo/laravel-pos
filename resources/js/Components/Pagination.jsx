@@ -2,7 +2,7 @@ import { Link } from '@inertiajs/react';
 
 export default function Pagination({ value }) {
     return (
-        <div className="border-blue-gray-50 flex items-center justify-between border-t p-4">
+        <div className="flex items-center justify-between border-t border-pink-500 p-4">
             {/* Mobile View: Previous and Next Buttons */}
             <div className="flex gap-2 sm:hidden">
                 <Link
@@ -60,7 +60,7 @@ export default function Pagination({ value }) {
                                 key={index}
                                 className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
                                     link.active
-                                        ? 'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                                        ? 'z-10 bg-pink-400 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                                         : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
                                 } ${
                                     !link.url &&
