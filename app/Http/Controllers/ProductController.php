@@ -9,20 +9,34 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use App\Events\ProductAdded;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category', 'inventory')->get();
+        $query = Product::with('category', 'inventory');
+
+        // Filter by search query if provided
+        if ($search = $request->get('search')) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhereHas('category', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+        }
+
+        // Paginate results
+        $products = $query->paginate(10);
 
         return Inertia::render('Product/Index', [
-            'products' => $products
+            'products' => $products,
+            'filters' => $request->only('search'),
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
