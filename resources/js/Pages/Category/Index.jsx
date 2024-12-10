@@ -1,4 +1,5 @@
 import InputError from '@/Components/InputError';
+import Pagination from '@/Components/Pagination';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
@@ -108,7 +109,7 @@ export default function Index({ categories }) {
                                         </div>
                                     </form>
                                 </div>
-                                <div className="p-4">
+                                <div className="p-4 text-gray-800">
                                     <table className="mt-4 w-full min-w-max table-auto text-left">
                                         <thead>
                                             <tr>
@@ -123,7 +124,7 @@ export default function Index({ categories }) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {categories.map((category) => (
+                                            {categories.data.map((category) => (
                                                 <tr key={category.id}>
                                                     <td className="px-4 py-3 text-gray-800">
                                                         {category.id}
@@ -161,6 +162,7 @@ export default function Index({ categories }) {
                                             ))}
                                         </tbody>
                                     </table>
+                                    <Pagination value={categories} />
                                 </div>
                             </div>
                         </div>
