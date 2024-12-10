@@ -131,25 +131,25 @@ const SalesReport = ({ sales, startDate, endDate, totalSalesAmount }) => {
                                 Date Range: {dateRange.start} to {dateRange.end}
                             </p>
                         </div>
-                        <table className="w-full border-collapse border border-pink-500 text-center text-sm">
+                        <table className="w-full border-collapse border border-gray-500 text-center text-sm">
                             <thead className="bg-pink-50">
                                 <tr>
-                                    <th className="border border-pink-500 p-2">
+                                    <th className="border border-gray-500 p-2">
                                         Sale Date
                                     </th>
-                                    <th className="border border-pink-500 p-2">
+                                    <th className="border border-gray-500 p-2">
                                         Processed By
                                     </th>
-                                    <th className="border border-pink-500 p-2">
+                                    <th className="border border-gray-500 p-2">
                                         Products
                                     </th>
-                                    <th className="border border-pink-500 p-2">
+                                    <th className="border border-gray-500 p-2">
                                         Quantity
                                     </th>
-                                    <th className="border border-pink-500 p-2">
+                                    <th className="border border-gray-500 p-2">
                                         Line Total
                                     </th>
-                                    <th className="border border-pink-500 p-2">
+                                    <th className="border border-gray-500 p-2">
                                         Total Sale
                                     </th>
                                 </tr>
@@ -159,16 +159,16 @@ const SalesReport = ({ sales, startDate, endDate, totalSalesAmount }) => {
                                     <tr
                                         key={index}
                                         className={
-                                            index % 2 === 0 ? 'bg-pink-50' : ''
+                                            index % 2 === 0 ? 'bg-pink-200' : ''
                                         }
                                     >
-                                        <td className="border border-pink-500 p-2">
+                                        <td className="border border-gray-400 p-2">
                                             {sale.sale_date}
                                         </td>
-                                        <td className="border border-pink-500 p-2">
+                                        <td className="border border-gray-400 p-2">
                                             {sale.processed_by}
                                         </td>
-                                        <td className="border border-pink-500 p-2">
+                                        <td className="border border-gray-400 p-2">
                                             {sale.products
                                                 .map(
                                                     (product) =>
@@ -176,7 +176,7 @@ const SalesReport = ({ sales, startDate, endDate, totalSalesAmount }) => {
                                                 )
                                                 .join(', ')}
                                         </td>
-                                        <td className="border border-pink-500 p-2">
+                                        <td className="border border-gray-400 p-2">
                                             {sale.products
                                                 .map(
                                                     (product) =>
@@ -184,7 +184,7 @@ const SalesReport = ({ sales, startDate, endDate, totalSalesAmount }) => {
                                                 )
                                                 .join(', ')}
                                         </td>
-                                        <td className="border border-pink-500 p-2">
+                                        <td className="border border-gray-400 p-2">
                                             {sale.products
                                                 .map((product) =>
                                                     new Intl.NumberFormat(
@@ -199,7 +199,7 @@ const SalesReport = ({ sales, startDate, endDate, totalSalesAmount }) => {
                                                 )
                                                 .join(', ')}
                                         </td>
-                                        <td className="border border-pink-500 p-2">
+                                        <td className="border border-gray-400 p-2">
                                             {new Intl.NumberFormat('en-PH', {
                                                 style: 'currency',
                                                 currency: 'PHP',
@@ -215,7 +215,7 @@ const SalesReport = ({ sales, startDate, endDate, totalSalesAmount }) => {
                     <div className="mx-8 mt-4 text-sm">
                         <div className="flex items-center justify-between py-2">
                             <span className="text-gray-700">Total Sales:</span>
-                            <span className="font-bold text-pink-600">
+                            <span className="font-bold text-pink-400">
                                 {new Intl.NumberFormat('en-PH', {
                                     style: 'currency',
                                     currency: 'PHP',
@@ -226,7 +226,7 @@ const SalesReport = ({ sales, startDate, endDate, totalSalesAmount }) => {
                             <span className="text-gray-700">
                                 Total Transactions:
                             </span>
-                            <span className="font-bold text-pink-600">
+                            <span className="font-bold text-pink-500">
                                 {sales.length}
                             </span>
                         </div>
