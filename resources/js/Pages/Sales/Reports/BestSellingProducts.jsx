@@ -138,22 +138,22 @@ const BestSellingProducts = ({ sales, startDate, endDate }) => {
                                 Date Range: {dateRange.start} to {dateRange.end}
                             </p>
                         </div>
-                        <table className="w-full border-collapse border border-pink-500 text-center text-sm">
+                        <table className="w-full border-collapse border border-gray-500 text-center text-sm">
                             <thead className="bg-pink-50">
                                 <tr>
-                                    <th className="border border-pink-500 p-2">
+                                    <th className="border border-gray-500 p-2">
                                         Rank
                                     </th>
-                                    <th className="border border-pink-500 p-2">
+                                    <th className="border border-gray-500 p-2">
                                         Product Name
                                     </th>
-                                    <th className="border border-pink-500 p-2">
+                                    <th className="border border-gray-500 p-2">
                                         Units Sold
                                     </th>
-                                    <th className="border border-pink-500 p-2">
+                                    <th className="border border-gray-500 p-2">
                                         Total Revenue
                                     </th>
-                                    <th className="border border-pink-500 p-2">
+                                    <th className="border border-gray-500 p-2">
                                         Category
                                     </th>
                                 </tr>
@@ -163,25 +163,25 @@ const BestSellingProducts = ({ sales, startDate, endDate }) => {
                                     <tr
                                         key={index}
                                         className={
-                                            index % 2 === 0 ? 'bg-pink-50' : ''
+                                            index % 2 === 0 ? 'bg-pink-200' : ''
                                         }
                                     >
-                                        <td className="border border-pink-500 p-2">
+                                        <td className="border border-gray-500 p-2">
                                             {product.rank}
                                         </td>
-                                        <td className="border border-pink-500 p-2">
+                                        <td className="border border-gray-500 p-2">
                                             {product.product_name}
                                         </td>
-                                        <td className="border border-pink-500 p-2">
+                                        <td className="border border-gray-500 p-2">
                                             {product.total_quantity_sold}
                                         </td>
-                                        <td className="border border-pink-500 p-2">
+                                        <td className="border border-gray-500 p-2">
                                             {new Intl.NumberFormat('en-PH', {
                                                 style: 'currency',
                                                 currency: 'PHP',
                                             }).format(product.total_revenue)}
                                         </td>
-                                        <td className="border border-pink-500 p-2">
+                                        <td className="border border-gray-500 p-2">
                                             {product.category_name}
                                         </td>
                                     </tr>
