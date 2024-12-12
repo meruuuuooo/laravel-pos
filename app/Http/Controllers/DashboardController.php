@@ -49,7 +49,7 @@ class DashboardController extends Controller
 
         $logs = SalesDetail::with('product', 'sale.user')
             ->orderBy('created_at', 'desc')
-            ->paginate(3);
+            ->paginate(5);
 
         return Inertia::render('Dashboard', [
             'totalSales' => $totalSales,

@@ -60,13 +60,13 @@ export default function Dashboard({
 
             <div className="py-6">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-4 grid-rows-6 gap-4">
+                    <div className="grid grid-cols-4 grid-rows-5 gap-4">
                         <div className="border border-pink-400 bg-white p-3 shadow-sm sm:rounded-lg">
                             <div className="flex flex-col items-start">
                                 <img
                                     src="/icons/d-sales.png"
                                     alt="sales-icon"
-                                    className="h-12 w-12 p-2"
+                                    className="h-1/6 w-20 p-2"
                                 />
 
                                 <span className="py-2 text-2xl font-semibold text-pink-500">
@@ -85,7 +85,7 @@ export default function Dashboard({
                                 <img
                                     src="/icons/d-inventory.png"
                                     alt="inventory-icon"
-                                    className="h-12 w-12 p-2"
+                                    className="h-1/6 w-20 p-2"
                                 />
 
                                 <span className="py-2 text-2xl font-semibold text-pink-500">
@@ -101,7 +101,7 @@ export default function Dashboard({
                                 <img
                                     src="/icons/d-product.png"
                                     alt="product-icon"
-                                    className="h-12 w-12 p-2"
+                                    className="h-1/6 w-20 p-2"
                                 />
 
                                 <span className="py-2 text-2xl font-semibold text-pink-500">
@@ -117,7 +117,7 @@ export default function Dashboard({
                                 <img
                                     src="/icons/d-categories.png"
                                     alt="category-icon"
-                                    className="h-12 w-12 p-2"
+                                    className="h-1/6 w-20 p-2"
                                 />
 
                                 <span className="py-2 text-2xl font-semibold text-pink-500">
@@ -128,7 +128,7 @@ export default function Dashboard({
                                 </p>
                             </div>
                         </div>
-                        <div className="col-span-3 row-span-3 border border-pink-400 bg-white p-3 shadow-sm sm:rounded-lg">
+                        <div className="col-span-3 row-span-2 border border-pink-400 bg-white p-3 shadow-sm sm:rounded-lg">
                             <div className="px-3">
                                 <div className="flex flex-row justify-between">
                                     <h2 className="text-lg font-semibold text-gray-800">
@@ -151,14 +151,14 @@ export default function Dashboard({
                                 </div>
                             </div>
                         </div>
-                        <div className="col-start-4 row-span-3 border border-pink-400 bg-white p-3 shadow-sm sm:rounded-lg">
+                        <div className="col-start-4 row-span-2 border border-pink-400 bg-white p-3 shadow-sm sm:rounded-lg">
                             <div className="px-3">
                                 <h2 className="text-lg font-semibold text-gray-800">
                                     Products
                                 </h2>
                             </div>
                         </div>
-                        <div className="col-span-4 row-span-2 row-start-5 border border-pink-400 bg-white p-3 shadow-sm sm:rounded-lg">
+                        <div className="col-span-4 row-span-2 row-start-4 border border-pink-400 bg-white p-3 shadow-sm sm:rounded-lg">
                             <div className="px-3">
                                 <h2 className="text-lg font-semibold text-gray-800">
                                     Logs
