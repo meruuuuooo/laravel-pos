@@ -24,12 +24,20 @@ class InventoryController extends Controller
                 });
         }
 
-        // Paginate results
         $products = $query->get();
+
+        $lowStockQuery = Product::with( 'inventory');
+
+
+        $lowStockProducts = $lowStockQuery->whereHas('inventory', function ($q) {
+            $q->where('quantity', '<=', 5);
+        })->get();
+
 
         return Inertia::render('Inventory/Index', [
             'products' => $products,
             'filters' => $request->only('search'),
+            'lowStockProducts' => $lowStockProducts,
         ]);
     }
 

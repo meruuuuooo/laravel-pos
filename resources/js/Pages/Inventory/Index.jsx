@@ -4,7 +4,7 @@ import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import EditStockModal from './Partials/EditStockModal';
 
-export default function Index({ products, filters }) {
+export default function Index({ products, filters, lowStockProducts }) {
     const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
     const [selectedStock, setSelectedStock] = useState(null); // Selected category state
 
@@ -170,7 +170,11 @@ export default function Index({ products, filters }) {
                                                         </button>
                                                     </div>
                                                 </li>
-                                            ))}
+                                            )) || (
+                                                <li className="p-4 text-center">
+                                                    No products found.
+                                                </li>
+                                            )}
                                         </ul>
                                     </div>
                                 </div>
@@ -183,37 +187,30 @@ export default function Index({ products, filters }) {
                                 </h5>
                                 <div className="max-h-96 overflow-y-auto p-4">
                                     <ul className="divide-y divide-gray-100 p-4">
-                                        {products
-                                            .filter(
-                                                (product) =>
-                                                    product.inventory.quantity <
-                                                    5,
-                                            ) // Adjust threshold as needed
-                                            .map((product) => (
-                                                <li
-                                                    key={product.id}
-                                                    className="flex items-center gap-x-4 py-5"
-                                                >
-                                                    <img
-                                                        alt=""
-                                                        src={product.imageURL}
-                                                        className="h-12 w-12 rounded-full bg-gray-50"
-                                                    />
-                                                    <div>
-                                                        <p className="text-sm font-semibold text-gray-900">
-                                                            {product.name}
-                                                        </p>
-                                                        <p className="text-xs text-gray-500">
-                                                            Quantity:{' '}
-                                                            {
-                                                                product
-                                                                    .inventory
-                                                                    .quantity
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                </li>
-                                            ))}
+                                        {lowStockProducts.map((product) => (
+                                            <li
+                                                key={product.id}
+                                                className="flex items-center gap-x-4 py-5"
+                                            >
+                                                <img
+                                                    alt=""
+                                                    src={product.imageURL}
+                                                    className="h-12 w-12 rounded-full bg-gray-50"
+                                                />
+                                                <div>
+                                                    <p className="text-sm font-semibold text-gray-900">
+                                                        {product.name}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">
+                                                        Quantity:{' '}
+                                                        {
+                                                            product.inventory
+                                                                .quantity
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </li>
+                                        ))}
                                     </ul>
                                 </div>
                             </div>
