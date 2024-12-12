@@ -16,8 +16,11 @@ use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+
+        
+
         // Fetch products with inventory quantity greater than or equal to 1, including their category
         $products = Product::with('category', 'inventory') // Load the related category
             ->whereHas('inventory', function ($query) {

@@ -13,8 +13,6 @@ const Index = ({ categories, products }) => {
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(false);
 
-    console.log(products);
-
     const filteredProducts = products.filter(
         (product) =>
             (selectedCategory === 'All' ||
@@ -305,7 +303,6 @@ const Index = ({ categories, products }) => {
                                 </div>
 
                                 {/* Place Order Button */}
-
                                 <button
                                     onClick={placeOrder}
                                     disabled={loading}
@@ -321,7 +318,8 @@ const Index = ({ categories, products }) => {
                                 </button>
                             </div>
                         </div>
-                        <div className="col-span-3 row-span-4 row-start-2">
+
+                        <div className="col-span-3 row-span-5 row-start-2">
                             <div className="rounded-lg border border-pink-400 bg-white px-4 sm:rounded-lg">
                                 <div className="my-4">
                                     {filteredProducts.length > 0 ? (
@@ -329,12 +327,12 @@ const Index = ({ categories, products }) => {
                                             {filteredProducts.map((product) => (
                                                 <div
                                                     key={product.id}
-                                                    className="max-w-xs overflow-hidden rounded-lg border border-pink-200 bg-white shadow-lg"
+                                                    className="max-w-sm overflow-hidden rounded-lg border border-pink-200 bg-white shadow-lg sm:max-w-xs lg:max-w-md"
                                                 >
                                                     <img
                                                         src={product.imageURL}
                                                         alt={product.name}
-                                                        className="h-32 w-full object-contain"
+                                                        className="h-32 w-full object-cover"
                                                     />
                                                     <div className="p-4">
                                                         <h3 className="text-md font-bold text-gray-800">
@@ -378,7 +376,7 @@ const Index = ({ categories, products }) => {
                                                                     .inventory
                                                                     .quantity
                                                                     ? 'cursor-not-allowed border-gray-400 text-gray-400'
-                                                                    : 'border-pink-400 text-pink-400 hover:bg-pink-300 hover:text-white'
+                                                                    : 'border-pink-400 text-pink-400 hover:bg-pink-300 hover:text-white focus:ring-2 focus:ring-pink-500 focus:ring-offset-2'
                                                             }`}
                                                         >
                                                             Add to Cart
