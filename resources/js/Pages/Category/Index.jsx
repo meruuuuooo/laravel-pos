@@ -14,6 +14,23 @@ const TABLE_HEAD = ['ID', 'Name', 'Created At', 'Updated At', 'Action'];
 export default function Index({ categories }) {
     const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
     const [selectedCategory, setSelectedCategory] = useState(null); // Selected category state
+    const [search, setSearch] = useState('');
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        router.get(route('category.index', { search }), {
+            preserveScroll: true,
+            preserveState: true,
+        });
+    };
+
+    const handleReset = () => {
+        setSearch('');
+        router.get(route('category.index'), {
+            preserveScroll: true,
+            preserveState: true,
+        });
+    };
 
     const handleSaveCategory = (newName) => {
         router.patch(route('category.update', selectedCategory.id), {
@@ -66,7 +83,7 @@ export default function Index({ categories }) {
                         <div className="p-6 text-gray-900 dark:text-gray-100">
                             <div className="h-full w-full rounded-lg bg-white shadow">
                                 <div className="rounded-t-lg border-b p-4">
-                                    <div className="mb-8 flex items-center justify-start gap-8">
+                                    <div className="mb-8 flex items-center justify-between gap-8">
                                         <div>
                                             <h5 className="text-lg font-semibold text-gray-800">
                                                 Category
@@ -74,6 +91,37 @@ export default function Index({ categories }) {
                                             <p className="mt-1 text-sm font-normal text-gray-500">
                                                 Manage your Category here
                                             </p>
+                                        </div>
+                                        <div>
+                                            <form
+                                                onSubmit={handleSearch}
+                                                className="flex gap-3"
+                                            >
+                                                <TextInput
+                                                    type="text"
+                                                    className="w-52 rounded-md border border-pink-300 px-4 py-2 text-sm text-gray-800 focus:ring-pink-500"
+                                                    placeholder="Search products..."
+                                                    value={search}
+                                                    onChange={(e) =>
+                                                        setSearch(
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                />
+                                                <button
+                                                    type="submit"
+                                                    className="rounded bg-blue-500 px-4 py-1 text-white"
+                                                >
+                                                    Search
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleReset}
+                                                    className="rounded bg-gray-500 px-4 py-1 text-white"
+                                                >
+                                                    Reset
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                     <form onSubmit={AddCategory}>

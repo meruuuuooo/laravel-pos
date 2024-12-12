@@ -12,15 +12,21 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        // Get the search term from the request, if available
+        $search = $request->input('search', '');
 
-        $categories = Category::paginate(5);
+        // Filter categories based on the search term
+        $categories = Category::when($search, function ($query, $search) {
+            return $query->where('name', 'like', '%' . $search . '%');
+        })->paginate(5);
 
         return Inertia::render('Category/Index', [
             'categories' => $categories,
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
