@@ -38,7 +38,19 @@ export default function StoreProduct({ categories }) {
         post(route('product.store'), {
             preserveScroll: true,
             preserveState: true,
+            onStart: () => {
+                swal2.fire({
+                    title: 'Creating Product',
+                    text: 'Please wait...',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    willOpen: () => {
+                        swal2.showLoading();
+                    },
+                });
+            },
             onSuccess: () => {
+                swal2.close();
                 reset();
                 setPreviewUrl(null);
                 swal2.fire(

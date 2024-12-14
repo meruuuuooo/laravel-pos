@@ -2,10 +2,9 @@ import Pagination from '@/Components/Pagination';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { PencilIcon } from '@heroicons/react/24/solid';
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
-import swal2 from 'sweetalert2';
 
 const TABLE_HEAD = [
     'Image',
@@ -35,32 +34,44 @@ export default function Index({ products, filters }) {
         router.get(route('product.index'), {}, { preserveState: true });
     };
 
-    const handleDeleteProduct = (id) => {
-        swal2
-            .fire({
-                title: 'Are you sure?',
-                text: 'You will not be able to recover this product!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-            })
-            .then((result) => {
-                if (result.isConfirmed) {
-                    router.delete(route('product.destroy', id), {
-                        preserveScroll: true,
-                        preserveState: true,
-                        onSuccess: () => {
-                            swal2.fire(
-                                'Deleted!',
-                                'Your product has been deleted.',
-                                'success',
-                            );
-                        },
-                    });
-                }
-            });
-    };
+    // const handleDeleteProduct = (id) => {
+    //     swal2
+    //         .fire({
+    //             title: 'Are you sure?',
+    //             text: 'You will not be able to recover this product!',
+    //             icon: 'warning',
+    //             showCancelButton: true,
+    //             confirmButtonText: 'Yes, delete it!',
+    //             cancelButtonText: 'No, cancel!',
+    //         })
+    //         .then((result) => {
+    //             if (result.isConfirmed) {
+    //                 router.delete(route('product.destroy', id), {
+    //                     preserveScroll: true,
+    //                     preserveState: true,
+    //                     onStart: () => {
+    //                         swal2.fire({
+    //                             title: 'Deleting Product',
+    //                             text: 'Please wait...',
+    //                             showConfirmButton: false,
+    //                             allowOutsideClick: false,
+    //                             willOpen: () => {
+    //                                 swal2.showLoading();
+    //                             },
+    //                         });
+    //                     },
+    //                     onSuccess: () => {
+    //                         swal2.close();
+    //                         swal2.fire(
+    //                             'Deleted!',
+    //                             'Your product has been deleted.',
+    //                             'success',
+    //                         );
+    //                     },
+    //                 });
+    //             }
+    //         });
+    // };
 
     return (
         <AuthenticatedLayout
@@ -188,7 +199,7 @@ export default function Index({ products, filters }) {
                                                                 <PencilIcon className="h-4 w-4" />
                                                             </button>
                                                         </Link>
-                                                        <button
+                                                        {/* <button
                                                             onClick={() => {
                                                                 handleDeleteProduct(
                                                                     product.id,
@@ -197,7 +208,7 @@ export default function Index({ products, filters }) {
                                                             className="p-2 text-red-500 hover:text-red-700"
                                                         >
                                                             <TrashIcon className="h-4 w-4" />
-                                                        </button>
+                                                        </button> */}
                                                     </td>
                                                 </tr>
                                             ))}
