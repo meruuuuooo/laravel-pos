@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->foreignId('category_id')->constrained('categories');
             $table->decimal('price', 10, 2)->default(0);
+            $table->softDeletes('deleted_at', 0);
             $table->timestamps();
         });
     }

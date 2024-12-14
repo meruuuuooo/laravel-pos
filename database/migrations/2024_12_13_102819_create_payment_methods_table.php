@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventories', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')->constrained('products');
-            $table->integer('quantity')->default(0);
-            $table->softDeletes('deleted_at', 0);
-            $table->timestamps();
+        Schema::create('payment_methods', function (Blueprint $table) {
+            $table->id(); // Primary key
+            $table->string('name')->unique(); // Payment method name (e.g., 'Cash', 'GCash')
+            $table->timestamps(); // Created at and updated at timestamps
         });
     }
 
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventories');
+        Schema::dropIfExists('payment_methods');
     }
 };
