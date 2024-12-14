@@ -29,7 +29,6 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:admin')->group(function () {
 
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::prefix('product')->name('product.')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('index');
@@ -38,6 +37,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit');
             Route::patch('/{product}', [ProductController::class, 'update'])->name('update');
             Route::delete('/{product}', [ProductController::class, 'destroy'])->name('destroy');
+            // Route::get('/trash', [ProductController::class, 'viewTrash'])->name('trash');
         });
 
         Route::prefix('category')->name('category.')->group(function () {
@@ -56,15 +56,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/sales', [SaleController::class, 'index'])->name('sale.index');
         Route::get('/sales/report/month-sales', [SaleController::class, 'salesReport'])->name('sales.monthlySales');
         Route::get('/sales/report/best-selling-products', [SaleController::class, 'BestSellingProducts'])->name('sales.bestSellingProducts');
-
     });
 
     Route::middleware('role:cashier')->group(function () {
         Route::get('/order', [OrderController::class, 'index'])->name('order.index');
         Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+        // Route::get('/order/receipt/{sale_id}', [OrderController::class, 'show'])->name('order.show');
+
     });
 
     Route::middleware(['role:admin|cashier'])->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
         Route::prefix('inventory')->name('inventory.')->group(function () {
             Route::get('/', [InventoryController::class, 'index'])->name('index');
             Route::patch('/{inventory}', [InventoryController::class, 'update'])->name('update');
