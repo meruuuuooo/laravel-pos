@@ -53,31 +53,29 @@ export default function AuthenticatedLayout({ header, children }) {
                     </div>
 
                     <ul className="space-y-2">
-                        {hasRole('admin') && (
-                            <li
-                                className={`flex items-center space-x-3 p-2 shadow-sm transition ${
+                        <li
+                            className={`flex items-center space-x-3 p-2 shadow-sm transition ${
+                                route().current('dashboard')
+                                    ? 'bg-pink-500 text-white'
+                                    : 'text-gray-700 hover:bg-gray-200'
+                            }`}
+                        >
+                            <img
+                                src="/icons/dashboard.png"
+                                alt="Dashboard Logo"
+                                className="h-8 w-8"
+                            />
+                            <NavLink
+                                href={route('dashboard')}
+                                className={`flex items-center space-x-3 px-4 transition ${
                                     route().current('dashboard')
-                                        ? 'bg-pink-500 text-white'
-                                        : 'text-gray-700 hover:bg-gray-200'
+                                        ? 'text-white'
+                                        : 'text-gray-700'
                                 }`}
                             >
-                                <img
-                                    src="/icons/dashboard.png"
-                                    alt="Dashboard Logo"
-                                    className="h-8 w-8"
-                                />
-                                <NavLink
-                                    href={route('dashboard')}
-                                    className={`flex items-center space-x-3 px-4 transition ${
-                                        route().current('dashboard')
-                                            ? 'text-white'
-                                            : 'text-gray-700'
-                                    }`}
-                                >
-                                    <span>Dashboard</span>
-                                </NavLink>
-                            </li>
-                        )}
+                                <span>Dashboard</span>
+                            </NavLink>
+                        </li>
 
                         {hasRole('cashier') && (
                             <li
@@ -176,7 +174,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                                 : 'text-gray-700'
                                         }`}
                                     >
-                                        <span>Categories</span>
+                                        <span>Category</span>
                                     </NavLink>
                                 </li>
                                 <li
@@ -202,6 +200,29 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <span>Sales Reports</span>
                                     </NavLink>
                                 </li>
+                                {/* <li
+                                    className={`flex items-center space-x-3 p-2 shadow-sm transition ${
+                                        route().current('product.trash')
+                                            ? 'bg-pink-500 text-white'
+                                            : 'text-gray-700 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    <img
+                                        src="/icons/trash.png"
+                                        alt="trash Logo"
+                                        className="h-8 w-8"
+                                    />
+                                    <NavLink
+                                        href={route('product.trash')}
+                                        className={`flex items-center space-x-3 px-4 transition ${
+                                            route().current('product.trash')
+                                                ? 'text-white'
+                                                : 'text-gray-700'
+                                        }`}
+                                    >
+                                        <span>Trash</span>
+                                    </NavLink>
+                                </li> */}
                                 <li
                                     className={`flex items-center space-x-3 p-2 shadow-sm transition ${
                                         route().current('user.index')
@@ -238,7 +259,55 @@ export default function AuthenticatedLayout({ header, children }) {
                         <span className="text-pink-500">Pats </span>
                         Convenience
                     </p>
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-6">
+                        {/* Notification Dropdown */}
+                        <Dropdown>
+                            <Dropdown.Trigger>
+                                <button className="relative flex items-center text-gray-500 focus:outline-none">
+                                    <svg
+                                        className="h-6 w-6 text-gray-500"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9"
+                                        />
+                                    </svg>
+                                    {/* Notification Badge */}
+                                    <span className="absolute -right-1 -top-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                                        3
+                                    </span>
+                                </button>
+                            </Dropdown.Trigger>
+                            <Dropdown.Content className="w-72">
+                                <div className="p-4 text-sm font-semibold text-gray-700">
+                                    Notifications
+                                </div>
+                                <ul className="max-h-64 overflow-auto">
+                                    <li className="border-b px-4 py-2 text-sm text-gray-600 hover:bg-gray-100">
+                                        New order received!
+                                    </li>
+                                    <li className="border-b px-4 py-2 text-sm text-gray-600 hover:bg-gray-100">
+                                        Inventory updated.
+                                    </li>
+                                    <li className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100">
+                                        Profile settings updated.
+                                    </li>
+                                </ul>
+                                <div className="p-2 text-center">
+                                    <button className="text-sm text-blue-500 hover:underline">
+                                        View all
+                                    </button>
+                                </div>
+                            </Dropdown.Content>
+                        </Dropdown>
+
+                        {/* User Dropdown */}
                         <Dropdown>
                             <Dropdown.Trigger>
                                 <button className="flex items-center text-sm text-gray-500 focus:outline-none">
