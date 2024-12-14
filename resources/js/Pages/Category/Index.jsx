@@ -3,7 +3,7 @@ import Pagination from '@/Components/Pagination';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { PencilIcon } from '@heroicons/react/24/solid';
 import { Head, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import swal2 from 'sweetalert2';
@@ -71,7 +71,7 @@ export default function Index({ categories }) {
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Categories
+                    Category Management
                 </h2>
             }
         >
@@ -202,9 +202,9 @@ export default function Index({ categories }) {
                                                             <PencilIcon className="h-4 w-4" />
                                                         </button>
 
-                                                        <button className="p-2 text-red-500 hover:text-red-700">
+                                                        {/* <button className="p-2 text-red-500 hover:text-red-700">
                                                             <TrashIcon className="h-4 w-4" />
-                                                        </button>
+                                                        </button> */}
                                                     </td>
                                                 </tr>
                                             ))}
