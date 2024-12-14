@@ -1,7 +1,9 @@
 import BarChart from '@/Components/BarChart';
 import Pagination from '@/Components/Pagination';
+import ReceiptModal from '@/Components/ReceiptModal';
 import SelectInput from '@/Components/SelectInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Button } from '@headlessui/react';
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
@@ -19,9 +21,8 @@ export default function Dashboard({
     totalCategory,
     salesData,
     logs,
+    lowStockProducts,
 }) {
-    console.log(logs);
-
     const [period, setPeriod] = useState('daily');
     const [chartLabels, setChartLabels] = useState([]);
     const [chartData, setChartData] = useState([]);
@@ -46,6 +47,21 @@ export default function Dashboard({
                 preserveScroll: true,
             },
         );
+    };
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedLog, setSelectedLog] = useState(null);
+
+    // Function to open the modal and set the selected log
+    const openModal = (log) => {
+        setSelectedLog(log);
+        setIsModalOpen(true);
+    };
+
+    // Function to close the modal
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedLog(null);
     };
 
     return (
@@ -152,10 +168,46 @@ export default function Dashboard({
                             </div>
                         </div>
                         <div className="col-start-4 row-span-2 border border-pink-400 bg-white p-3 shadow-sm sm:rounded-lg">
-                            <div className="px-3">
-                                <h2 className="text-lg font-semibold text-gray-800">
-                                    Products
+                            <div className="rounded-lg bg-white p-6 shadow-md">
+                                <h2 className="mb-4 text-xl font-semibold text-red-800">
+                                    Low Stock Products
                                 </h2>
+                                {lowStockProducts.length > 0 ? (
+                                    <div className="max-h-96 space-y-4 overflow-y-auto">
+                                        <ul className="space-y-4">
+                                            {lowStockProducts.map((item) => (
+                                                <li
+                                                    key={item.id}
+                                                    className="flex items-center space-x-4 rounded-md bg-red-50 p-4 shadow-sm"
+                                                >
+                                                    {/* Product Image */}
+                                                    <img
+                                                        src={
+                                                            item.product
+                                                                .imageURL
+                                                        }
+                                                        alt={item.product.name}
+                                                        className="h-16 w-16 rounded-md object-cover"
+                                                    />
+                                                    {/* Product Info */}
+                                                    <div className="flex-1">
+                                                        <h3 className="font-medium text-gray-800">
+                                                            {item.product.name}
+                                                        </h3>
+                                                        <p className="text-sm font-semibold text-red-700">
+                                                            Quantity:{' '}
+                                                            {item.quantity}
+                                                        </p>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ) : (
+                                    <p className="text-gray-600">
+                                        No low-stock products found.
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div className="col-span-4 row-span-2 row-start-4 border border-pink-400 bg-white p-3 shadow-sm sm:rounded-lg">
@@ -166,75 +218,115 @@ export default function Dashboard({
                                 <div className="max-h-96 overflow-y-auto p-2">
                                     <ul className="divide-y divide-gray-100">
                                         {logs.data.map((log) => (
-                                            <li
-                                                key={log.id}
-                                                className="flex justify-between py-2"
-                                            >
-                                                {/* Product Information */}
-                                                <div className="flex gap-x-4">
-                                                    <img
-                                                        alt={
-                                                            log.product?.name ||
-                                                            'Product Image'
-                                                        }
-                                                        src={
-                                                            log.product
-                                                                ?.imageURL ||
-                                                            '/placeholder.jpg'
-                                                        }
-                                                        className="h-12 w-12 rounded-md bg-gray-50"
-                                                    />
+                                            <li key={log.id} className="py-2">
+                                                {/* Sale Information */}
+                                                <div className="mb-2 flex items-center justify-between">
                                                     <div>
                                                         <p className="text-sm font-semibold text-gray-900">
-                                                            {log.product
-                                                                ?.name || 'N/A'}
+                                                            Cashier:{' '}
+                                                            {log.cashier ||
+                                                                'N/A'}
                                                         </p>
-                                                        <p className="text-xs text-gray-500">
-                                                            Sold by:{' '}
-                                                            {log.sale.user
-                                                                .name || 'N/A'}
+                                                        <p className="text-sm text-gray-900">
+                                                            Products Sold:{' '}
+                                                            {log.products_sold ||
+                                                                0}
                                                         </p>
                                                     </div>
-                                                </div>
-                                                {/* Sale Information */}
-                                                <div>
-                                                    <p className="text-sm text-gray-900">
-                                                        Quantity Sold:{' '}
-                                                        {log.quantity_sold || 0}
-                                                    </p>
-                                                    <p className="text-sm text-gray-900">
-                                                        Total:{' '}
-                                                        {new Intl.NumberFormat(
-                                                            'en-PH',
-                                                            {
-                                                                style: 'currency',
-                                                                currency: 'PHP',
-                                                            },
-                                                        ).format(
-                                                            log.line_total || 0,
+                                                    {/* Product Images */}
+                                                    <div className="flex items-start justify-start gap-2 overflow-x-auto">
+                                                        {log.products.map(
+                                                            (
+                                                                product,
+                                                                index,
+                                                            ) => (
+                                                                <img
+                                                                    key={index}
+                                                                    alt={
+                                                                        product.name ||
+                                                                        'Product Image'
+                                                                    }
+                                                                    src={
+                                                                        product.imageURL ||
+                                                                        '/placeholder.jpg'
+                                                                    }
+                                                                    className="h-12 w-12 rounded-md bg-gray-50"
+                                                                />
+                                                            ),
                                                         )}
-                                                    </p>
-                                                </div>
-                                                {/* Time of Sale */}
-                                                <div>
-                                                    <p className="text-sm text-gray-500">
-                                                        Sold At:{' '}
-                                                        {new Date(
-                                                            log.sale.created_at,
-                                                        ).toLocaleTimeString(
-                                                            [],
-                                                            {
-                                                                hour: '2-digit',
-                                                                minute: '2-digit',
-                                                            },
-                                                        )}
-                                                    </p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm text-gray-900">
+                                                            Total:{' '}
+                                                            {new Intl.NumberFormat(
+                                                                'en-PH',
+                                                                {
+                                                                    style: 'currency',
+                                                                    currency:
+                                                                        'PHP',
+                                                                },
+                                                            ).format(
+                                                                log.total_amount ||
+                                                                    0,
+                                                            )}
+                                                        </p>
+                                                        <p className="text-sm text-gray-500">
+                                                            Sold At:{' '}
+                                                            {new Date(
+                                                                log.sold_at,
+                                                            ).toLocaleString(
+                                                                'en-PH',
+                                                                {
+                                                                    dateStyle:
+                                                                        'medium',
+                                                                    timeStyle:
+                                                                        'short',
+                                                                },
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm text-gray-900">
+                                                            Payment Method:{' '}
+                                                            {log.payment_method ||
+                                                                'N/A'}
+                                                        </p>
+                                                        <p className="text-sm text-gray-900">
+                                                            Amount:{' '}
+                                                            {new Intl.NumberFormat(
+                                                                'en-PH',
+                                                                {
+                                                                    style: 'currency',
+                                                                    currency:
+                                                                        'PHP',
+                                                                },
+                                                            ).format(
+                                                                log.payment_amount ||
+                                                                    0,
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <Button
+                                                            onClick={() =>
+                                                                openModal(log)
+                                                            }
+                                                            className="w-full rounded bg-pink-500 px-4 py-2 text-sm text-white hover:bg-pink-600"
+                                                        >
+                                                            View Receipt
+                                                        </Button>
+                                                    </div>
                                                 </div>
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
                                 <Pagination value={logs} />
+                                <ReceiptModal
+                                    isOpen={isModalOpen}
+                                    closeModal={closeModal}
+                                    log={selectedLog}
+                                />
                             </div>
                         </div>
                     </div>
