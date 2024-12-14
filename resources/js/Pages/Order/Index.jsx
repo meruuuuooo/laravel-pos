@@ -1,3 +1,4 @@
+import SelectInput from '@/Components/SelectInput';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
@@ -6,12 +7,25 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import swal2 from 'sweetalert2';
 
-const Index = ({ categories, products }) => {
-    const [searchTerm, setSearchTerm] = useState('');
+const Index = ({ categories, products, payment_method }) => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [cart, setCart] = useState([]);
     const [total, setTotal] = useState(0);
+    const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState(''); // "cash" or "gcash"
+    const [cashAmount, setCashAmount] = useState(''); // Payment amount
+    const [number, setNumber] = useState(''); // Gcash number
+
+    const remainingBalance = cashAmount && total ? cashAmount - total : 0;
+
+    const payment_Method = payment_method.map((method) => ({
+        value: method.id,
+        label: method.name,
+    }));
+
+    console.log(payment_Method);
+    console.log('method choose: ', paymentMethod);
 
     const filteredProducts = products.filter(
         (product) =>
@@ -64,7 +78,7 @@ const Index = ({ categories, products }) => {
         setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
     };
 
-    const placeOrder = async () => {
+    const handlePlaceOrder = async () => {
         if (cart.length === 0) {
             swal2.fire({
                 title: 'Cart is empty',
@@ -74,7 +88,40 @@ const Index = ({ categories, products }) => {
             return;
         }
 
-        setLoading(true); // Start loading
+        if (!paymentMethod) {
+            swal2.fire({
+                title: 'Payment method required',
+                text: 'Please select a payment method before placing an order.',
+                icon: 'warning',
+            });
+            return;
+        }
+
+        if (!cashAmount || cashAmount <= 0) {
+            swal2.fire({
+                title: 'Invalid payment amount',
+                text: 'Please enter a valid payment amount before placing an order.',
+                icon: 'warning',
+            });
+            return;
+        }
+
+        const total = cart.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0,
+        );
+        const remainingBalance = cashAmount - total;
+
+        if (remainingBalance < 0) {
+            swal2.fire({
+                title: 'Insufficient payment',
+                text: `Your payment is short by PHP ${Math.abs(remainingBalance).toFixed(2)}.`,
+                icon: 'error',
+            });
+            return;
+        }
+
+        setLoading(true);
 
         try {
             await router.post(
@@ -85,29 +132,53 @@ const Index = ({ categories, products }) => {
                         quantity: item.quantity,
                         price: item.price,
                     })),
+                    paymentMethod,
+                    number,
+                    cashAmount,
+                    remainingBalance,
                 },
                 {
+                    onStart: () => {
+                        swal2.fire({
+                            title: 'Placing order',
+                            text: 'Please wait while we process your order...',
+                            icon: 'info',
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                swal2.showLoading();
+                            },
+                        });
+                    },
                     onSuccess: () => {
+                        swal2.close();
                         swal2.fire({
                             title: 'Order placed',
-                            text: 'Your order has been placed successfully.',
+                            text: 'Your order has been successfully placed.',
                             icon: 'success',
                         });
-
                         setCart([]);
+                        setPaymentMethod('');
+                        setCashAmount('');
                     },
                 },
             );
         } catch (error) {
+            swal2.close();
             swal2.fire({
-                title: 'Failed to place order',
+                title: 'Order failed',
                 text: 'An error occurred while placing your order. Please try again.',
                 icon: 'error',
             });
         } finally {
-            setLoading(false); // Stop loading
+            setLoading(false);
         }
     };
+
+    useEffect(() => {
+        // Optional: Handle updates for total or other side-effects when cart changes
+    }, [cart, cashAmount]);
 
     useEffect(() => {
         const newTotal = cart.reduce(
@@ -275,7 +346,6 @@ const Index = ({ categories, products }) => {
                                                 >
                                                     +
                                                 </button>
-
                                                 <button
                                                     onClick={() =>
                                                         removeFromCart(item.id)
@@ -302,14 +372,96 @@ const Index = ({ categories, products }) => {
                                     </p>
                                 </div>
 
+                                {/* Payment Method */}
+                                <div className="mt-6">
+                                    <label className="block text-sm font-semibold text-gray-800">
+                                        Payment Method
+                                    </label>
+                                    <SelectInput
+                                        value={paymentMethod}
+                                        onChange={(e) =>
+                                            setPaymentMethod(e.target.value)
+                                        }
+                                        options={payment_Method}
+                                        className="mt-2 w-full rounded-lg border border-gray-300 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                    />
+                                    {(paymentMethod === '1' ||
+                                        paymentMethod === '2') && (
+                                        <div>
+                                            {paymentMethod === '2' && (
+                                                <div className="mt-4">
+                                                    <label className="block text-sm font-semibold text-gray-800">
+                                                        Enter GCash Number
+                                                    </label>
+                                                    <input
+                                                        type="phone"
+                                                        value={number}
+                                                        onChange={(e) =>
+                                                            setNumber(
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        className="mt-2 w-full rounded-lg border border-gray-300 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                                    />
+                                                </div>
+                                            )}
+                                            <div className="mt-4">
+                                                <label className="block text-sm font-semibold text-gray-800">
+                                                    Enter Payment Amount
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    value={cashAmount}
+                                                    onChange={(e) =>
+                                                        setCashAmount(
+                                                            parseFloat(
+                                                                e.target.value,
+                                                            ) || 0,
+                                                        )
+                                                    }
+                                                    className="mt-2 w-full rounded-lg border border-gray-300 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Payment Feedback */}
+                                {cashAmount && total && (
+                                    <div className="mt-4 text-sm text-gray-700">
+                                        {remainingBalance >= 0 ? (
+                                            <p>
+                                                Change:{' '}
+                                                <span className="font-semibold text-green-600">
+                                                    {new Intl.NumberFormat(
+                                                        'en-PH',
+                                                        {
+                                                            style: 'currency',
+                                                            currency: 'PHP',
+                                                        },
+                                                    ).format(remainingBalance)}
+                                                </span>
+                                            </p>
+                                        ) : (
+                                            <p>
+                                                <span className="font-semibold text-red-600">
+                                                    Insufficient Payment
+                                                </span>
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+
                                 {/* Place Order Button */}
                                 <button
-                                    onClick={placeOrder}
-                                    disabled={loading}
+                                    onClick={handlePlaceOrder}
+                                    disabled={
+                                        loading ||
+                                        !paymentMethod ||
+                                        cashAmount <= 0
+                                    }
                                     className={`mt-4 w-full bg-pink-500 px-4 py-2 font-semibold text-white hover:bg-pink-600 ${
-                                        loading
-                                            ? 'bg-gray-400'
-                                            : 'bg-blue-500 text-white'
+                                        loading ? 'bg-gray-400' : 'bg-pink-500'
                                     }`}
                                 >
                                     {loading
@@ -393,6 +545,7 @@ const Index = ({ categories, products }) => {
                                     )}
                                 </div>
                             </div>
+                            {/* <Pagination value={}/> */}
                         </div>
                     </div>
                 </div>

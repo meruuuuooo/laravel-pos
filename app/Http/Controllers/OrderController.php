@@ -12,15 +12,13 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\PaymentMethod;
 use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
     public function index(Request $request)
     {
-
-        
-
         // Fetch products with inventory quantity greater than or equal to 1, including their category
         $products = Product::with('category', 'inventory') // Load the related category
             ->whereHas('inventory', function ($query) {
@@ -30,29 +28,22 @@ class OrderController extends Controller
 
         // Fetch all categories, ordered alphabetically by name
         $categories = Category::orderBy('name', 'asc')->get();
+        $payment_method = PaymentMethod::all();
 
         // Return the data to the view
         return Inertia::render('Order/Index', [
             'products' => $products,
             'categories' => $categories,
+            'payment_method' => $payment_method
         ]);
     }
 
 
-
-
     public function store(Request $request)
     {
-        // Validate the incoming request
-        $request->validate([
-            'cart' => 'required|array',
-            'cart.*.id' => 'exists:products,id',
-            'cart.*.quantity' => 'required|integer|min:1',
-        ]);
+        $sale = null; // Variable to hold the sale instance
 
-        // Begin a database transaction
-        DB::transaction(function () use ($request) {
-            // Create the sale record
+        DB::transaction(function () use ($request, &$sale) {
             $sale = Sale::create([
                 'user_id' => Auth::id(),
                 'sale_date' => now(),
@@ -61,32 +52,30 @@ class OrderController extends Controller
                 }, 0),
             ]);
 
-            // Loop through the cart and create sales details
             foreach ($request->cart as $item) {
-                // Retrieve the product and its inventory
                 $product = Product::with('inventory')->find($item['id']);
                 $inventory = $product->inventory;
 
-                // Check if there is enough stock
                 if ($inventory->quantity < $item['quantity']) {
                     throw new \Exception('Insufficient stock for product ' . $product->name);
                 }
 
-                // Create sales detail
                 SalesDetail::create([
                     'sale_id' => $sale->id,
                     'product_id' => $item['id'],
                     'quantity_sold' => $item['quantity'],
+                    'payment_method_id' => $request->paymentMethod,
+                    'payment_amount' => $request->cashAmount,
+                    'phone_number' => $request->number,
+                    'change' => $request->remainingBalance,
                     'line_total' => $item['price'] * $item['quantity'],
                 ]);
 
-                // Reduce product stock in the inventory
                 $inventory->quantity -= $item['quantity'];
                 $inventory->save();
             }
         });
 
-        // Redirect to the order index page
-        return redirect()->route('order.index')->with('success', 'Order placed successfully');
+        return redirect()->route('order.index',);
     }
 }
