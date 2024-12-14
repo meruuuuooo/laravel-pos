@@ -26,7 +26,7 @@ class InventoryController extends Controller
 
         $products = $query->get();
 
-        $lowStockQuery = Product::with( 'inventory');
+        $lowStockQuery = Product::with('inventory');
 
 
         $lowStockProducts = $lowStockQuery->whereHas('inventory', function ($q) {
@@ -82,11 +82,13 @@ class InventoryController extends Controller
             'quantity' => 'required|integer|min:0',
         ]);
 
+        // Add to the existing quantity
         $inventory->update([
-            'quantity' => $request->quantity,
+            'quantity' => $inventory->quantity + $request->quantity,
         ]);
 
-        return redirect(route('inventory.index', absolute: false));
+        return redirect(route('inventory.index', absolute: false))
+            ->with('success', 'Quantity added successfully!');
     }
 
     /**
