@@ -5,6 +5,7 @@ import SelectInput from '@/Components/SelectInput';
 import TextInput from '@/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import swal2 from 'sweetalert2';
 
 export default function UpdateProduct({ product, categories }) {
     const { data, setData, patch, errors, processing } = useForm({
@@ -28,7 +29,33 @@ export default function UpdateProduct({ product, categories }) {
         patch(route('product.update', product.id), {
             preserveScroll: true,
             preserveState: true,
-            onSuccess: () => reset(),
+            onStart: () => {
+                swal2.fire({
+                    title: 'Updating Product',
+                    text: 'Please wait...',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    willOpen: () => {
+                        swal2.showLoading();
+                    },
+                });
+            },
+            onSuccess: () => {
+                swal2.close();
+                swal2.fire(
+                    'Success',
+                    'Product updated successfully',
+                    'success',
+                );
+            },
+            onError: () => {
+                swal2.close();
+                swal2.fire(
+                    'Error',
+                    'An error occurred. Please try again.',
+                    'error',
+                );
+            },
         });
     };
 
