@@ -197,7 +197,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                                 : 'text-gray-700'
                                         }`}
                                     >
-                                        <span>Sales Reports</span>
+                                        <span>Sales Report</span>
                                     </NavLink>
                                 </li>
                                 {/* <li
