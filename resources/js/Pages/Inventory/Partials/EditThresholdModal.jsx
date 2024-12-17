@@ -1,21 +1,17 @@
-import { usePermission } from '@/Composable/Permissions';
 import { useEffect, useState } from 'react';
 
-const EditStockModal = ({ isOpen, onClose, inventory, onSave }) => {
-    const { hasRole } = usePermission();
-
-    const [quantity, setQuantity] = useState();
-    const [addQuantity, setAddQuantity] = useState();
+const EditThresholdModal = ({ isOpen, onClose, inventory, onSave }) => {
+    const [threshold, setThreshold] = useState('');
 
     useEffect(() => {
         if (isOpen && inventory) {
-            setQuantity(inventory.quantity || '');
+            setThreshold(inventory.threshold || '');
         }
     }, [isOpen, inventory]);
 
     const handleSave = () => {
-        onSave(quantity); // Pass the updated quantity to the parent handler
-        setQuantity(''); // Reset input
+        onSave(threshold); // Pass the updated quantity to the parent handler
+        setThreshold(''); // Reset input
         onClose(); // Close the modal
     };
 
@@ -30,7 +26,7 @@ const EditStockModal = ({ isOpen, onClose, inventory, onSave }) => {
         >
             <div className="w-1/3 rounded-lg bg-white p-6 shadow-lg">
                 <h2 id="modal-title" className="mb-4 text-lg font-semibold">
-                    {hasRole('admin') ? 'Edit Stock' : 'Add Stock'}
+                    Edit Threshold
                 </h2>
                 <form
                     onSubmit={(e) => {
@@ -43,19 +39,19 @@ const EditStockModal = ({ isOpen, onClose, inventory, onSave }) => {
                             htmlFor="quantity"
                             className="mb-2 block text-sm font-bold text-gray-700"
                         >
-                            Quantity
+                            threshold
                         </label>
                         <input
                             type="number"
                             id="quantity"
-                            value={hasRole('admin') ? quantity : addQuantity}
-                            onChange={(e) => setQuantity(e.target.value)}
+                            value={threshold}
+                            onChange={(e) => setThreshold(e.target.value)}
                             className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
-                            placeholder="Enter new quantity"
+                            placeholder="Enter new threshold"
                         />
-                        {quantity === '' && (
+                        {threshold === '' && (
                             <p className="mt-2 text-sm text-red-500">
-                                Quantity cannot be empty.
+                                Threshold cannot be empty.
                             </p>
                         )}
                     </div>
@@ -63,7 +59,7 @@ const EditStockModal = ({ isOpen, onClose, inventory, onSave }) => {
                         <button
                             type="button"
                             onClick={() => {
-                                setQuantity(''); // Reset input
+                                setThreshold(''); // Reset input
                                 onClose(); // Close modal
                             }}
                             className="mr-2 rounded bg-gray-400 px-4 py-2 font-bold text-white hover:bg-gray-500"
@@ -83,4 +79,4 @@ const EditStockModal = ({ isOpen, onClose, inventory, onSave }) => {
     );
 };
 
-export default EditStockModal;
+export default EditThresholdModal;
