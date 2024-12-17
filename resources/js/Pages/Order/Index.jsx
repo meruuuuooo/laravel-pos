@@ -1,5 +1,5 @@
+import Pagination from '@/Components/Pagination';
 import SelectInput from '@/Components/SelectInput';
-import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -7,15 +7,16 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import swal2 from 'sweetalert2';
 
-const Index = ({ categories, products, payment_method }) => {
+const Index = ({ categories, products, payment_method, filters }) => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [cart, setCart] = useState([]);
     const [total, setTotal] = useState(0);
-    const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState(''); // "cash" or "gcash"
     const [cashAmount, setCashAmount] = useState(''); // Payment amount
     const [number, setNumber] = useState(''); // Gcash number
+
+    const [search, setSearch] = useState(filters.search || '');
 
     const remainingBalance = cashAmount && total ? cashAmount - total : 0;
 
@@ -24,15 +25,44 @@ const Index = ({ categories, products, payment_method }) => {
         label: method.name,
     }));
 
-    console.log(payment_Method);
-    console.log('method choose: ', paymentMethod);
+    // const filteredProducts = products.filter(
+    //     (product) =>
+    //         (selectedCategory === 'All' ||
+    //             product.category.name === selectedCategory) &&
+    //         product.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    // );
 
-    const filteredProducts = products.filter(
-        (product) =>
-            (selectedCategory === 'All' ||
-                product.category.name === selectedCategory) &&
-            product.name.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
+    const handleCategorySelect = (category) => {
+        setSelectedCategory(category);
+        // Re-fetch products with the selected category and current search term
+        fetchProducts(category, search);
+    };
+
+    const fetchProducts = (category, search) => {
+        router.get(
+            route('order.index'),
+            {
+                category: category === 'All' ? '' : category, // Avoid sending 'All' as category
+                search: search || '', // Ensure empty string if search is undefined
+            },
+            { preserveState: true, preserveScroll: true }, // Preserve pagination and state
+        );
+    };
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        fetchProducts(selectedCategory, search); // Include category in search
+    };
+
+    const handleReset = () => {
+        setSearch('');
+        setSelectedCategory('All'); // Reset category to default
+        router.get(
+            route('order.index'),
+            {},
+            { preserveState: true, preserveScroll: true },
+        ); // Clear all filters
+    };
 
     const addToCart = (product) => {
         setCart((prevCart) => {
@@ -212,23 +242,46 @@ const Index = ({ categories, products, payment_method }) => {
                                             {categories.length} Categories
                                         </p>
                                     </div>
-                                    <div className="w-full md:w-72">
-                                        <TextInput
-                                            type="text"
-                                            className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm focus:ring-pink-500"
-                                            placeholder="Search"
-                                            value={searchTerm}
-                                            onChange={(e) =>
-                                                setSearchTerm(e.target.value)
-                                            }
-                                        />
+                                    <div className="gap-4 md:flex-row">
+                                        <form
+                                            onSubmit={handleSearch}
+                                            className="flex gap-4"
+                                        >
+                                            <input
+                                                type="text"
+                                                value={search}
+                                                onChange={(e) => {
+                                                    setSearch(e.target.value);
+                                                    // Trigger the fetch immediately after the search term changes
+                                                    fetchProducts(
+                                                        selectedCategory,
+                                                        e.target.value,
+                                                    );
+                                                }}
+                                                placeholder="Search for products..."
+                                                className="rounded-md border border-gray-300 px-4 py-2"
+                                            />
+                                            <button
+                                                type="submit"
+                                                className="rounded bg-blue-500 px-4 py-1 text-white"
+                                            >
+                                                Search
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={handleReset}
+                                                className="rounded bg-gray-500 px-4 py-1 text-white"
+                                            >
+                                                Reset
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                                 <div className="p-2">
                                     <div className="flex space-x-2 overflow-x-auto py-2">
                                         <div
                                             onClick={() =>
-                                                setSelectedCategory('All')
+                                                handleCategorySelect('All')
                                             }
                                             className={`inline-block min-w-[120px] cursor-pointer rounded-3xl p-2 text-center transition ${
                                                 selectedCategory === 'All'
@@ -250,7 +303,7 @@ const Index = ({ categories, products, payment_method }) => {
                                             <div
                                                 key={category.id}
                                                 onClick={() =>
-                                                    setSelectedCategory(
+                                                    handleCategorySelect(
                                                         category.name,
                                                     )
                                                 }
@@ -474,9 +527,9 @@ const Index = ({ categories, products, payment_method }) => {
                         <div className="col-span-3 row-span-5 row-start-2">
                             <div className="rounded-lg border border-pink-400 bg-white px-4 sm:rounded-lg">
                                 <div className="my-4">
-                                    {filteredProducts.length > 0 ? (
+                                    {products.data.length > 0 ? (
                                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                            {filteredProducts.map((product) => (
+                                            {products.data.map((product) => (
                                                 <div
                                                     key={product.id}
                                                     className="max-w-sm overflow-hidden rounded-lg border border-pink-200 bg-white shadow-lg sm:max-w-xs lg:max-w-md"
@@ -545,7 +598,7 @@ const Index = ({ categories, products, payment_method }) => {
                                     )}
                                 </div>
                             </div>
-                            {/* <Pagination value={}/> */}
+                            <Pagination value={products} />
                         </div>
                     </div>
                 </div>

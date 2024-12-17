@@ -17,16 +17,31 @@ use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
+
     public function index(Request $request)
     {
-        // Fetch products with inventory quantity greater than or equal to 1, including their category
-        $products = Product::with('category', 'inventory') // Load the related category
-            ->whereHas('inventory', function ($query) {
-                $query->where('quantity', '>=', 1); // Filter by inventory quantity
-            })
-            ->get();
+        $query = Product::with('category', 'inventory');
 
-        // Fetch all categories, ordered alphabetically by name
+
+        // Filter by category if a category is provided and it's not 'All'
+        if ($category = $request->get('category')) {
+            if ($category !== 'All') {
+                $query->whereHas('category', function ($q) use ($category) {
+                    $q->where('name', $category);
+                });
+            }
+        }
+
+        // Filter by search query if provided
+        if ($search = $request->get('search')) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhereHas('category', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+        }
+
+        $products = $query->paginate(6);
+
         $categories = Category::orderBy('name', 'asc')->get();
         $payment_method = PaymentMethod::all();
 
@@ -34,9 +49,31 @@ class OrderController extends Controller
         return Inertia::render('Order/Index', [
             'products' => $products,
             'categories' => $categories,
-            'payment_method' => $payment_method
+            'payment_method' => $payment_method,
+            'filters' => $request->only('search', 'category')
         ]);
     }
+
+    // public function index(Request $request)
+    // {
+    //     // Fetch products with inventory quantity greater than or equal to 1, including their category
+    //     $products = Product::with('category', 'inventory') // Load the related category
+    //         ->whereHas('inventory', function ($query) {
+    //             $query->where('quantity', '>=', 1); // Filter by inventory quantity
+    //         })
+    //         ->get();
+
+    //     // Fetch all categories, ordered alphabetically by name
+    //     $categories = Category::orderBy('name', 'asc')->get();
+    //     $payment_method = PaymentMethod::all();
+
+    //     // Return the data to the view
+    //     return Inertia::render('Order/Index', [
+    //         'products' => $products,
+    //         'categories' => $categories,
+    //         'payment_method' => $payment_method
+    //     ]);
+    // }
 
 
     public function store(Request $request)
