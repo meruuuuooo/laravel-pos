@@ -187,7 +187,7 @@ export default function Dashboard({
                                                                 .imageURL
                                                         }
                                                         alt={item.product.name}
-                                                        className="h-16 w-16 rounded-md object-cover"
+                                                        className="h-12 w-12 rounded-md object-cover"
                                                     />
                                                     {/* Product Info */}
                                                     <div className="flex-1">
