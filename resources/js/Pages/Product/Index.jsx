@@ -5,6 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PencilIcon } from '@heroicons/react/24/solid';
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
+import swal2 from 'sweetalert2';
 
 const TABLE_HEAD = [
     'Image',
@@ -26,7 +27,31 @@ export default function Index({ products, filters }) {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        router.get(route('product.index'), { search }, { preserveState: true });
+        router.get(
+            route('product.index'),
+            { search },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                onStart: () => {
+                    swal2.fire({
+                        title: 'Searching Products',
+                        text: 'Please wait...',
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        willOpen: () => {
+                            swal2.showLoading();
+                        },
+                    });
+                },
+                onSuccess: () => {
+                    swal2.close();
+                },
+                onError: () => {
+                    swal2.close();
+                },
+            },
+        );
     };
 
     const handleReset = () => {
