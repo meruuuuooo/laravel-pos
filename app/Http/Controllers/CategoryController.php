@@ -20,7 +20,7 @@ class CategoryController extends Controller
         // Filter categories based on the search term
         $categories = Category::when($search, function ($query, $search) {
             return $query->where('name', 'like', '%' . $search . '%');
-        })->paginate(5);
+        })->orderBy('created_at', 'desc')->paginate(10);
 
         return Inertia::render('Category/Index', [
             'categories' => $categories,
@@ -91,6 +91,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+
+        return redirect(route('category.index', absolute: false));
     }
 }
