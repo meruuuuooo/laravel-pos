@@ -15,15 +15,17 @@ class UserSeeder extends Seeder
     {
         // Create admin user
         $adminUser = User::factory()->create([
-            'name' => 'admin_user',
+            'name' => 'mailem',
             'role' => 'admin',
+            'email' => 'mailem.meldavid@gmail.com'
         ]);
         $adminUser->assignRole('admin');
 
         // Create cashier user
         $cashierUser = User::factory()->create([
-            'name' => 'cashier_user',
+            'name' => 'merto',
             'role' => 'cashier',
+            'email' => 'merto@gmail.com'
         ]);
         $cashierUser->assignRole('cashier');
     }
