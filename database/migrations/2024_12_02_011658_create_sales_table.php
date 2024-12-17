@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->nullOnDelete();
             $table->dateTime('sale_date')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->decimal('total_amount', 10, 2)->default(0.00);
             $table->timestamps();

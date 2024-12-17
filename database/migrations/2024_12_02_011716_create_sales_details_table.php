@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('sales_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sale_id')->constrained('sales');
-            $table->foreignId('product_id')->constrained('products');
-            $table->foreignId('payment_method_id')->constrained('payment_methods');
+            $table->foreignId('sale_id')->constrained('sales')->nullOnDelete();
+            $table->foreignId('product_id')->constrained('products')->nullOnDelete();
+            $table->foreignId('payment_method_id')->constrained('payment_methods')->nullOnDelete();
             $table->decimal('payment_amount', 10, 2)->default(0);
             $table->string('phone_number')->nullable();
             $table->decimal('change', 10, 2)->default(0);
