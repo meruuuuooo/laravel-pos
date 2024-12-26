@@ -18,8 +18,11 @@ class UserController extends Controller
 
     public function index()
     {
+
+        $users = User::where('id', '!=', auth()->id())->get();
+
         return Inertia::render('User/Index', [
-            'users' => User::all(),
+            'users' => $users,
         ]);
     }
 
@@ -58,5 +61,4 @@ class UserController extends Controller
     {
         $user->delete();
     }
-
 }

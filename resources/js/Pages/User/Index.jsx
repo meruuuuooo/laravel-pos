@@ -15,7 +15,7 @@ export default function Index({ users }) {
 
             <div className="p-6">
                 <div className="w-96 pb-4">
-                    <div className="w-70 box-border h-40 border-4 p-3">
+                    <div className="w-70 box-border h-40 border-4 p-3 border-pink-500 rounded-md ">
                         <p className="text-gray-500">Total Users</p>
                         <div className="flex items-center justify-evenly">
                             <p className="text-5xl italic text-pink-500">
