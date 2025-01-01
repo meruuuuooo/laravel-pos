@@ -20,10 +20,14 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+
+        
+
         return [
-            'name' => $this->faker->unique()->word,
+            'imageURL' => $this->faker->imageUrl(),
+            'name' => $this->faker->name,
             'category_id' => Category::factory(),
-            'price' => $this->faker->randomFloat(2, 1, 100),
+            'price' => $this->faker->randomFloat(2, 1, 1000),
         ];
     }
 }

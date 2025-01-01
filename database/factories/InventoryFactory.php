@@ -17,8 +17,7 @@ class InventoryFactory extends Factory
     {
         return [
             'product_id' => Product::factory(),
-            'quantity_in_stock' => $this->faker->numberBetween(1, 100),
-            'price' => $this->faker->randomFloat(2, 1, 100),
+            'quantity' => $this->faker->numberBetween(1, 100),
         ];
     }
 }
