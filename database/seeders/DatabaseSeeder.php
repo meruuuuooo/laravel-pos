@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             CategorySeeder::class,
+            ProductAndInventorySeeder::class,
             PaymentMethodSeeder::class,
         ]);
     }
