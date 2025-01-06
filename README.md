@@ -20,7 +20,7 @@ This project is a Point of Sale (POS) system with inventory management for Pat's
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/laravel-pos.git
+    git clone https://github.com/meruuuuooo/laravel-pos.git
     ```
 
 2. Navigate to the project directory:
