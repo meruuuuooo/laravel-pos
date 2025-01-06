@@ -27,7 +27,11 @@ class SaleController extends Controller
         // Fetch sales data within the date range
         $sales = Sale::with([
             'user:id,name',
-            'salesDetails.product:id,name',
+            'salesDetails' => function ($query) {
+                $query->with(['product' => function ($query) {
+                    $query->select('id', 'name')->withTrashed(); // Include soft-deleted products
+                }]);
+            },
         ])
             ->whereBetween('sale_date', [$startDate, $endDate])
             ->orderBy('sale_date', 'desc')
@@ -39,7 +43,7 @@ class SaleController extends Controller
                     'processed_by' => $sale->user->name,
                     'products' => $sale->salesDetails->map(function ($detail) {
                         return [
-                            'product_name' => $detail->product->name,
+                            'product_name' => $detail->product->name ?? '[Deleted Product]',
                             'quantity_sold' => $detail->quantity_sold,
                             'line_total' => $detail->line_total,
                         ];
@@ -48,16 +52,24 @@ class SaleController extends Controller
                 ];
             });
 
+
+
+
         $totalSalesAmount = Sale::whereBetween('sale_date', [$startDate, $endDate])->sum('total_amount');
 
         // Fetch and aggregate best-selling products
-        $topProducts = Sale::with(['salesDetails.product.category'])
+        $topProducts = Sale::with([
+            'salesDetails.product' => function ($query) {
+                $query->withTrashed(); // Include soft-deleted products
+            },
+            'salesDetails.product.category',
+        ])
             ->whereBetween('sale_date', [$startDate, $endDate])
             ->get()
             ->flatMap(function ($sale) {
                 return $sale->salesDetails->map(function ($detail) {
                     return [
-                        'product_name' => $detail->product->name,
+                        'product_name' => $detail->product->name ?? '[Deleted Product]',
                         'category_name' => $detail->product->category->name ?? 'Uncategorized',
                         'quantity_sold' => $detail->quantity_sold,
                         'line_total' => $detail->line_total,
