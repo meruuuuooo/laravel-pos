@@ -199,55 +199,50 @@ class ProductController extends Controller
         return redirect()->route('product.index')->with('success', 'Product updated successfully!');
     }
 
-    public function viewTrash(Request $request)
-    {
-        // Fetch trashed products with their category relationship
-        $deletedProducts = Product::onlyTrashed()->with('category')->get();
+    // public function viewTrash(Request $request)
+    // {
+    //     // Fetch trashed products with their category relationship
+    //     $deletedProducts = Product::onlyTrashed()->with('category')->get();
 
-        // Fetch trashed inventory
-        $deletedInventory = Inventory::onlyTrashed()->get();
+    //     // Fetch trashed inventory
+    //     $deletedInventory = Inventory::onlyTrashed()->get();
 
-        // Map inventory to their corresponding products
-        $trashedProductsWithInventory = $deletedProducts->map(function ($product) use ($deletedInventory) {
-            // Find the inventory that belongs to the product
-            $inventory = $deletedInventory->firstWhere('product_id', $product->id);
-            $product->inventory = $inventory; // Attach inventory to the product
-            return $product;
-        });
+    //     // Map inventory to their corresponding products
+    //     $trashedProductsWithInventory = $deletedProducts->map(function ($product) use ($deletedInventory) {
+    //         // Find the inventory that belongs to the product
+    //         $inventory = $deletedInventory->firstWhere('product_id', $product->id);
+    //         $product->inventory = $inventory; // Attach inventory to the product
+    //         return $product;
+    //     });
 
-        // Paginate the results manually
-        $currentPage = LengthAwarePaginator::resolveCurrentPage(); // Get current page
-        $perPage = 10; // Set items per page
-        $currentPageItems = $trashedProductsWithInventory->slice(($currentPage - 1) * $perPage, $perPage)->values();
+    //     // Paginate the results manually
+    //     $currentPage = LengthAwarePaginator::resolveCurrentPage(); // Get current page
+    //     $perPage = 10; // Set items per page
+    //     $currentPageItems = $trashedProductsWithInventory->slice(($currentPage - 1) * $perPage, $perPage)->values();
 
-        $paginatedProducts = new LengthAwarePaginator(
-            $currentPageItems,
-            $trashedProductsWithInventory->count(),
-            $perPage,
-            $currentPage,
-            [
-                'path' => $request->url(),
-                'query' => $request->query(),
-            ]
-        );
+    //     $paginatedProducts = new LengthAwarePaginator(
+    //         $currentPageItems,
+    //         $trashedProductsWithInventory->count(),
+    //         $perPage,
+    //         $currentPage,
+    //         [
+    //             'path' => $request->url(),
+    //             'query' => $request->query(),
+    //         ]
+    //     );
 
-        return Inertia::render('Product/Trash', [
-            'products' => $paginatedProducts,
-        ]);
-    }
+    //     return Inertia::render('Product/Trash', [
+    //         'products' => $paginatedProducts,
+    //     ]);
+    // }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Product $product)
     {
-        // Check if the product has an inventory and delete it
-        if ($product->inventory) {
-            $product->inventory->delete(); // This uses soft delete if the model has the SoftDeletes trait
-        }
-
-        // Now delete the product
-        $product->delete(); // Soft delete will move it to "deleted_at"
+        $product = Product::findOrFail($product->id);
+        $product->delete();
 
         return redirect()->route('product.index')->with('success', 'Product deleted successfully.');
     }
