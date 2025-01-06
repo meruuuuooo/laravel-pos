@@ -51,7 +51,13 @@ class DashboardController extends Controller
         //     ->orderBy('created_at', 'desc')
         //     ->paginate(3);
 
-        $logs = Sale::with(['salesDetails.product', 'salesDetails.paymentMethod', 'user'])
+        $logs = Sale::with([
+            'salesDetails.product' => function ($query) {
+                $query->withTrashed(); // Include soft-deleted products
+            },
+            'salesDetails.paymentMethod',
+            'user'
+        ])
             ->withCount('salesDetails')
             ->orderBy('created_at', 'desc')
             ->paginate(5)
@@ -61,21 +67,22 @@ class DashboardController extends Controller
                     'cashier' => $sale->user->name ?? 'N/A', // Cashier's name (user)
                     'products_sold' => $sale->sales_details_count, // Count of products sold
                     'total_amount' => $sale->salesDetails->sum('line_total'), // Sum of line totals
-                    'sold_at' => $sale->created_at, // Sale creation date and time
+                    'sold_at' => $sale->created_at->format('Y-m-d H:i:s'), // Sale creation date and time
                     'payment_method' => $sale->salesDetails->first()?->paymentMethod->name ?? 'N/A', // First payment method used
                     'customer_number' => $sale->salesDetails->first()?->phone_number ?? 'N/A', // First customer number
                     'payment_amount' => $sale->salesDetails->first()?->payment_amount ?? 0, // First payment amount
                     'products' => $sale->salesDetails->map(function ($detail) {
                         return [
-                            'name' => $detail->product->name ?? 'Unknown Product',
+                            'name' => $detail->product->name ?? '[Deleted Product]', // Handle deleted products
                             'imageURL' => $detail->product->imageURL ?? '/placeholder.jpg', // Default placeholder if no image
-                            'quantity' => $detail->quantity_sold ?? 1, // Product quantity, fallback to 1 if missing
-                            'price' => $detail->product->price ?? 0, // Product price (from product relation)
-                            'line_total' => $detail->line_total, // Total for the item (quantity * price)
+                            'quantity' => $detail->quantity_sold ?? 1, // Product quantity
+                            'price' => $detail->product->price ?? 0, // Product price
+                            'line_total' => $detail->line_total, // Total for the item
                         ];
                     }),
                 ];
             });
+
 
         $lowStockProducts = Inventory::with('product:id,name,imageURL')
             ->where('quantity', '<=', 5)
