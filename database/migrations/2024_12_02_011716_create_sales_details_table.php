@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('sales_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sale_id')->constrained('sales')->nullOnDelete();
-            $table->foreignId('product_id')->constrained('products')->nullOnDelete();
+            $table->foreignId('sale_id')->constrained('sales')->onDelete('cascade');
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->foreignId('payment_method_id')->constrained('payment_methods')->nullOnDelete();
             $table->decimal('payment_amount', 10, 2)->default(0);
             $table->string('phone_number')->nullable();
