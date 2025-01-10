@@ -3,7 +3,7 @@ import Pagination from '@/Components/Pagination';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { PencilIcon } from '@heroicons/react/24/solid';
 import { Head, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import swal2 from 'sweetalert2';
@@ -64,57 +64,57 @@ export default function Index({ categories }) {
         setIsModalOpen(true); // Open the modal
     };
 
-    const handleDelete = (category) => {
-        swal2
-            .fire({
-                title: 'Are you sure?',
-                text: 'You will not able to recover this category!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-            })
-            .then((result) => {
-                if (result.isConfirmed) {
-                    router.delete(
-                        route('category.destroy', { category: category }),
-                        {
-                            preserveScroll: true,
-                            preserveState: true,
-                            onStart: () => {
-                                swal2.fire({
-                                    title: 'Deleting Category',
-                                    text: 'Please wait...',
-                                    showConfirmButton: false,
-                                    allowOutsideClick: false,
-                                    willOpen: () => {
-                                        swal2.showLoading();
-                                    },
-                                });
-                            },
-                            onSuccess: () => {
-                                swal2.close();
-                                swal2.fire(
-                                    'Success',
-                                    'Category deleted successfully',
-                                    'success',
-                                );
-                            },
-                            onError: () => {
-                                swal2.close();
-                                swal2.fire(
-                                    'Error',
-                                    'An error occurred. Please try again.',
-                                    'error',
-                                );
-                            },
-                        },
-                    );
-                }
-            });
-    };
+    // const handleDelete = (category) => {
+    //     swal2
+    //         .fire({
+    //             title: 'Are you sure?',
+    //             text: 'You will not able to recover this category!',
+    //             icon: 'warning',
+    //             showCancelButton: true,
+    //             confirmButtonText: 'Yes, delete it!',
+    //             cancelButtonText: 'No, cancel!',
+    //             confirmButtonColor: '#d33',
+    //             cancelButtonColor: '#3085d6',
+    //         })
+    //         .then((result) => {
+    //             if (result.isConfirmed) {
+    //                 router.delete(
+    //                     route('category.destroy', { category: category }),
+    //                     {
+    //                         preserveScroll: true,
+    //                         preserveState: true,
+    //                         onStart: () => {
+    //                             swal2.fire({
+    //                                 title: 'Deleting Category',
+    //                                 text: 'Please wait...',
+    //                                 showConfirmButton: false,
+    //                                 allowOutsideClick: false,
+    //                                 willOpen: () => {
+    //                                     swal2.showLoading();
+    //                                 },
+    //                             });
+    //                         },
+    //                         onSuccess: () => {
+    //                             swal2.close();
+    //                             swal2.fire(
+    //                                 'Success',
+    //                                 'Category deleted successfully',
+    //                                 'success',
+    //                             );
+    //                         },
+    //                         onError: () => {
+    //                             swal2.close();
+    //                             swal2.fire(
+    //                                 'Error',
+    //                                 'An error occurred. Please try again.',
+    //                                 'error',
+    //                             );
+    //                         },
+    //                     },
+    //                 );
+    //             }
+    //         });
+    // };
 
     const { data, setData, post, errors, reset } = useForm({
         name: '',
@@ -284,7 +284,7 @@ export default function Index({ categories }) {
                                                             <PencilIcon className="h-4 w-4" />
                                                         </button>
 
-                                                        <button
+                                                        {/* <button
                                                             onClick={() =>
                                                                 handleDelete(
                                                                     category,
@@ -293,7 +293,7 @@ export default function Index({ categories }) {
                                                             className="p-2 text-red-500 hover:text-red-700"
                                                         >
                                                             <TrashIcon className="h-4 w-4" />
-                                                        </button>
+                                                        </button> */}
                                                     </td>
                                                 </tr>
                                             ))}
