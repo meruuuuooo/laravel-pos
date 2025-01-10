@@ -1,6 +1,4 @@
 const Receipt = ({ sale }) => {
-
-
     if (!sale) {
         return <p>Loading receipt...</p>;
     }

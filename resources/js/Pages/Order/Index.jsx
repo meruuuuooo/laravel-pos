@@ -1,6 +1,7 @@
 import Pagination from '@/Components/Pagination';
 import SelectInput from '@/Components/SelectInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import ProductCard from '@/Pages/Order/Partials/ProductCard';
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
@@ -24,13 +25,6 @@ const Index = ({ categories, products, payment_method, filters }) => {
         value: method.id,
         label: method.name,
     }));
-
-    // const filteredProducts = products.filter(
-    //     (product) =>
-    //         (selectedCategory === 'All' ||
-    //             product.category.name === selectedCategory) &&
-    //         product.name.toLowerCase().includes(searchTerm.toLowerCase()),
-    // );
 
     const handleCategorySelect = (category) => {
         setSelectedCategory(category);
@@ -206,9 +200,7 @@ const Index = ({ categories, products, payment_method, filters }) => {
         }
     };
 
-    useEffect(() => {
-        // Optional: Handle updates for total or other side-effects when cart changes
-    }, [cart, cashAmount]);
+    useEffect(() => {}, [cart, cashAmount]);
 
     useEffect(() => {
         const newTotal = cart.reduce(
@@ -529,66 +521,12 @@ const Index = ({ categories, products, payment_method, filters }) => {
                                 <div className="my-4">
                                     {products.data.length > 0 ? (
                                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                            {products.data.map((product) => (
-                                                <div
-                                                    key={product.id}
-                                                    className="max-w-sm overflow-hidden rounded-lg border border-pink-200 bg-white shadow-lg sm:max-w-xs lg:max-w-md"
-                                                >
-                                                    <img
-                                                        src={product.imageURL}
-                                                        alt={product.name}
-                                                        className="h-32 w-full object-cover"
-                                                    />
-                                                    <div className="p-4">
-                                                        <h3 className="text-md font-bold text-gray-800">
-                                                            {product.name}
-                                                        </h3>
-                                                        <p className="mt-1 text-gray-600">
-                                                            {new Intl.NumberFormat(
-                                                                'en-PH',
-                                                                {
-                                                                    style: 'currency',
-                                                                    currency:
-                                                                        'PHP',
-                                                                },
-                                                            ).format(
-                                                                product.price,
-                                                            )}
-                                                        </p>
-                                                        <button
-                                                            onClick={() =>
-                                                                addToCart(
-                                                                    product,
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                cart.find(
-                                                                    (item) =>
-                                                                        item.id ===
-                                                                        product.id,
-                                                                )?.quantity >=
-                                                                product
-                                                                    .inventory
-                                                                    .quantity
-                                                            }
-                                                            className={`mt-2 w-full rounded-md border-2 px-3 py-1 font-semibold ${
-                                                                cart.find(
-                                                                    (item) =>
-                                                                        item.id ===
-                                                                        product.id,
-                                                                )?.quantity >=
-                                                                product
-                                                                    .inventory
-                                                                    .quantity
-                                                                    ? 'cursor-not-allowed border-gray-400 text-gray-400'
-                                                                    : 'border-pink-400 text-pink-400 hover:bg-pink-300 hover:text-white focus:ring-2 focus:ring-pink-500 focus:ring-offset-2'
-                                                            }`}
-                                                        >
-                                                            Add to Cart
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))}
+                                            {/* product card */}
+                                            <ProductCard
+                                                value={products}
+                                                onClickProduct={addToCart}
+                                                cart={cart}
+                                            />
                                         </div>
                                     ) : (
                                         <p className="text-center text-gray-500">
@@ -598,6 +536,7 @@ const Index = ({ categories, products, payment_method, filters }) => {
                                     )}
                                 </div>
                             </div>
+                            {/* product card pagination */}
                             <Pagination value={products} />
                         </div>
                     </div>
