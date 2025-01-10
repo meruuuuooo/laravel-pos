@@ -8,7 +8,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import swal2 from 'sweetalert2';
 
-export default function StoreProduct({ categories }) {
+export default function CreateForm({ categories }) {
     const {
         data,
         setData,

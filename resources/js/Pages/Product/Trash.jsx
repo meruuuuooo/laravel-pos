@@ -1,9 +1,11 @@
 import Pagination from '@/Components/Pagination';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import swal2 from 'sweetalert2';
 
 export default function Trash({ products }) {
+    console.log(products);
+
     const TABLE_HEAD = [
         { key: 'image', label: 'Image' },
         { key: 'name', label: 'Name' },
@@ -14,39 +16,65 @@ export default function Trash({ products }) {
     ];
 
     const restoreProduct = (productId) => {
-        swal2.fire({
-            title: 'Restore Product',
-            text: 'Are you sure you want to restore this product?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Restore',
-            showLoaderOnConfirm: true,
-            preConfirm: () => {
-                return router
-                    .post(route('product.restore', { product: productId }))
-                    .then(() => {
-                        swal2.fire(
-                            'Restored!',
-                            'The product has been successfully restored.',
-                            'success',
-                        );
-                    })
-                    .catch(() => {
-                        swal2.fire(
-                            'Error',
-                            'An error occurred while restoring the product.',
-                            'error',
-                        );
+        swal2
+            .fire({
+                title: 'Restore Product',
+                text: 'Are you sure you want to restore this product?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Restore',
+                cancelButtonText: 'Cancel',
+            })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    router.delete(route('product.restore', productId), {
+                        preserveScroll: true,
+                        preserveState: true,
+                        onStart: () => {
+                            swal2.fire({
+                                title: 'Restoring Product',
+                                text: 'Please wait...',
+                                showConfirmButton: false,
+                                allowOutsideClick: false,
+                                willOpen: () => {
+                                    swal2.showLoading();
+                                },
+                            });
+                        },
+                        onSuccess: () => {
+                            swal2.close();
+                            swal2.fire(
+                                'Restored!',
+                                'Your product has been Restored.',
+                                'success',
+                            );
+                        },
                     });
-            },
-        });
+                    // router
+                    //     .post(route('product.restore', { product: productId }))
+                    //     .then(() => {
+                    //         swal2.fire(
+                    //             'Restored!',
+                    //             'The product has been successfully restored.',
+                    //             'success',
+                    //         );
+                    //     })
+                    //     .catch(() => {
+                    //         swal2.fire(
+                    //             'Error',
+                    //             'An error occurred while restoring the product.',
+                    //             'error',
+                    //         );
+                    //     });
+                }
+            });
     };
 
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Trash Management
+                    Product Management
                 </h2>
             }
         >
@@ -57,7 +85,19 @@ export default function Trash({ products }) {
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900 dark:text-gray-100">
                             <div className="h-full w-full rounded-lg bg-white shadow">
-                                {/* Product Table */}
+                                <div className="rounded-t-lg border-b p-4">
+                                    <h5 className="text-lg font-semibold text-gray-800">
+                                        Deleted list
+                                    </h5>
+                                    <p className="mt-1 text-sm font-normal text-gray-500">
+                                        Manage your products here
+                                    </p>
+                                    <Link href={route('product.index')}>
+                                        <p className="mt-1 text-sm font-normal text-blue-500">
+                                            Go back
+                                        </p>
+                                    </Link>
+                                </div>
                                 <div className="p-4 text-gray-800">
                                     <table className="mt-4 w-full min-w-max table-auto border-collapse text-left">
                                         <thead>

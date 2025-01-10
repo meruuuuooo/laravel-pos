@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import UpdateProduct from './partials/UpdateProduct';
+import UpdateProduct from './partials/EditForm';
 
 export default function Edit({ product, categories }) {
     return (

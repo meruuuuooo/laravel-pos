@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import StoreProduct from './partials/StoreProduct';
+import CreateForm from './partials/CreateForm';
 
 export default function Create({ categories }) {
     return (
@@ -16,7 +16,7 @@ export default function Create({ categories }) {
             <div className="py-6">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                        <StoreProduct categories={categories} />
+                        <CreateForm categories={categories} />
                     </div>
                 </div>
             </div>
