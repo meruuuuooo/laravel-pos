@@ -1,7 +1,7 @@
 import PrimaryButton from '@/Components/PrimaryButton';
-import { UserPlusIcon } from '@heroicons/react/24/solid';
+import { EyeIcon, UserPlusIcon } from '@heroicons/react/24/solid';
 import { Link } from '@inertiajs/react';
-const TABLE_HEAD = ['Member', 'Role', 'Status', 'Created At'];
+const TABLE_HEAD = ['Member', 'Role', 'Status', 'Created At', ''];
 
 export default function UserTable({ users }) {
     return (
@@ -89,6 +89,13 @@ export default function UserTable({ users }) {
                                             user.created_at,
                                         ).toLocaleDateString()}
                                     </p>
+                                </td>
+                                <td>
+                                    <Link href={route('user.show', user.id)}>
+                                        <button className="p-2 text-blue-500 hover:text-blue-700">
+                                            <EyeIcon className="h-4 w-4" />
+                                        </button>
+                                    </Link>
                                 </td>
                             </tr>
                         ))}

@@ -5,7 +5,7 @@ import SelectInput from '@/Components/SelectInput';
 import TextInput from '@/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
 
-export default function StoreUser() {
+export default function UserForm() {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
