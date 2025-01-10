@@ -37,7 +37,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit');
             Route::patch('/{product}', [ProductController::class, 'update'])->name('update');
             Route::delete('/{product}', [ProductController::class, 'destroy'])->name('destroy');
-            // Route::get('/trash', [ProductController::class, 'viewTrash'])->name('trash');
+            Route::get('/deleted', [ProductController::class, 'deletedProducts'])->name('deleted');
+            Route::delete('/{product}/restore', [ProductController::class, 'restore'])->name('restore');
         });
 
         Route::prefix('category')->name('category.')->group(function () {
@@ -52,11 +53,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/create', [UserController::class, 'create'])->name('create');
             Route::post('/', [UserController::class, 'store'])->name('store');
             Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+            Route::get('/{user}/show', [UserController::class,'show'])->name('show');
         });
 
         Route::get('/sales', [SaleController::class, 'index'])->name('sale.index');
-        Route::get('/sales/report/month-sales', [SaleController::class, 'salesReport'])->name('sales.monthlySales');
-        Route::get('/sales/report/best-selling-products', [SaleController::class, 'BestSellingProducts'])->name('sales.bestSellingProducts');
     });
 
     Route::middleware('role:cashier')->group(function () {
