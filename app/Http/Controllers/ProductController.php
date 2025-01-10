@@ -199,6 +199,24 @@ class ProductController extends Controller
         return redirect()->route('product.index')->with('success', 'Product updated successfully!');
     }
 
+    public function deletedProducts(Request $request)
+    {
+        $products = Product::onlyTrashed()->with('category', 'inventory')->paginate(10);
+
+        return Inertia::render('Product/Trash', [
+            'products' => $products,
+        ]);
+    }
+
+    public function restore($id)
+    {
+        Product::withTrashed()
+            ->where('id', $id)
+            ->restore();
+
+        return redirect()->route('product.deleted');
+    }
+
     // public function viewTrash(Request $request)
     // {
     //     // Fetch trashed products with their category relationship

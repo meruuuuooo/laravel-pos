@@ -56,6 +56,14 @@ class UserController extends Controller
         return redirect(route('user.index', absolute: false));
     }
 
+    public function show(User $user)
+    {
+
+        return Inertia::render('User/Show', [
+            'user'=> $user
+        ]);
+    }
+
 
     public function destroy(User $user): void
     {
